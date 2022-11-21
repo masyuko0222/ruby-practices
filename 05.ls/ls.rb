@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
 # 表示するファイルと列数は、メソッドで処理を行う前に決められるので、トップレベルで定義。
-@files_no_dot = Dir.entries('.').sort.grep_v(/^\./)
-@columns = 3
+FILES_NO_DOT = Dir.entries('.').sort.grep_v(/^\./)
+COLUMNS = 3
 
 def save_files_horizontally
   # transpose前は3行表示になるように分割(transpose後に3列表示になるために)
-  lines = (@files_no_dot.size % @columns).zero? ? (@files_no_dot.size / @columns) : (@files_no_dot.size / @columns) + 1
-  files_horizontally = @files_no_dot.each_slice(lines).to_a
+  lines = (FILES_NO_DOT.size % COLUMNS).zero? ? (FILES_NO_DOT.size / COLUMNS) : (FILES_NO_DOT.size / COLUMNS) + 1
+  files_horizontally = FILES_NO_DOT.each_slice(lines).to_a
 
   # 各配列の要素数が一致していない場合、nilを追加して要素数を全て揃える
   max_elements = files_horizontally.max_by(&:size).size
