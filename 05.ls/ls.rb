@@ -20,7 +20,6 @@ end
 def ready_files_to_transpose
   non_dot_files = Dir.entries('.').sort.grep_v(/^\./)
 
-  # この後non_dot_filesにnilを追加するので、追加する前に、最も文字数が多いファイル名の「文字数」を取得しています。
   # この変数を利用するのはmainメソッド内のため、インスタンス変数として定義しています。
   @filname_max_char = non_dot_files.max_by(&:length).length
 
