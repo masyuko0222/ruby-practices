@@ -1,36 +1,33 @@
 # frozen_string_literal: true
 
-# 表示するファイルと列数は、メソッドで処理を行う前に決められるので、トップレベルで定義。
-FILES_NO_DOT = Dir.entries('.').sort.grep_v(/^\./)
+# 表示する列数は仕様段階で決まるので、定数として定義しました。
 COLUMNS = 3
 
-def save_files_horizontally
-  # transpose前は3行表示になるように分割(transpose後に3列表示になるために)
-  lines = (FILES_NO_DOT.size % COLUMNS).zero? ? (FILES_NO_DOT.size / COLUMNS) : (FILES_NO_DOT.size / COLUMNS) + 1
-  files_horizontally = FILES_NO_DOT.each_slice(lines).to_a
-
-  # 各配列の要素数が一致していない場合、nilを追加して要素数を全て揃える
-  max_elements = files_horizontally.max_by(&:size).size
-  files_horizontally.each do |arr|
-    arr << nil while arr.size < max_elements
+def main
+  # mainメソッド実行時にnilが表示されないように、transpose後にnilの削除も一緒に行っています。
+  after_transposing_files = ready_files_to_transpose.transpose.each do |files|
+    files.delete(nil)
   end
 
-  files_horizontally
-end
-
-def display_files_vertically
-  files_vertically = save_files_horizontally.transpose.each do |arr|
-    arr.delete(nil)
-  end
-
-  max_chars_filename = files_vertically.flatten.max_by(&:length).length
-  files_vertically.each do |arr|
-    arr.each do |file|
-      # どれだけ長いファイル名でも、綺麗に表示できるようにする
-      print file.ljust(max_chars_filename + 1)
+  after_transposing_files.each do |files|
+    files.each do |file|
+      print file.ljust(@filname_max_char + 1)
     end
     print "\n"
   end
 end
 
-display_files_vertically
+def ready_files_to_transpose
+  non_dot_files = Dir.entries('.').sort.grep_v(/^\./)
+
+  # この後non_dot_filesにnilを追加するので、追加する前に、最も文字数が多いファイル名の「文字数」を取得しています。
+  # この変数を利用するのはmainメソッド内のため、インスタンス変数として定義しています。
+  @filname_max_char = non_dot_files.max_by(&:length).length
+
+  line = (non_dot_files.size.to_f / COLUMNS).ceil
+
+  non_dot_files << nil until (non_dot_files.size % line).zero?
+  non_dot_files.each_slice(line).to_a
+end
+
+main
