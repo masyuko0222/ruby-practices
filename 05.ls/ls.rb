@@ -3,11 +3,11 @@
 COLUMN_LENGTH = 3
 
 def main
-  max_filename_char = count_filename_char
+  max_filename_char_length = count_filename_char
 
   prepare_files_to_display.each do |files|
     files.each do |file|
-      print file.ljust(max_filename_char + 1) if file
+      print file.ljust(max_filename_char_length + 1) if file
     end
     print "\n"
   end
@@ -18,8 +18,7 @@ def load_files
 end
 
 def count_filename_char
-  non_dot_files = load_files
-  non_dot_files.max_by(&:length).length
+  load_files.max_by(&:length).length
 end
 
 def prepare_files_to_display
