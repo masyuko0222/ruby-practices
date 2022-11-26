@@ -28,8 +28,8 @@ end
 def transpose_files(files)
   line_length = (files.size.to_f / COLUMN_LENGTH).ceil
 
-  adding_nil_count = line_length * COLUMN_LENGTH - files.size
-  adding_nil_count.times { files << nil }
+  nil_adding_count = line_length * COLUMN_LENGTH - files.size
+  nil_adding_count.times { files << nil }
 
   files.each_slice(line_length).to_a.transpose
 end
