@@ -3,11 +3,10 @@
 COLUMN_LENGTH = 3
 
 def main
-  # mainメソッド内だけでも、どんな種類のファイルかを一目で分かりやすくしたいため、このように命名しました。
-  no_dot_files = load_files
+  files = load_files
 
-  max_filename_length = count_length_filename(no_dot_files)
-  transposed_files = transpose_files(no_dot_files)
+  max_filename_length = files.max_by(&:length).length
+  transposed_files = build_file_tables(files)
 
   transposed_files.each do |files|
     files.each do |file|
@@ -21,15 +20,11 @@ def load_files
   Dir.entries('.').sort.grep_v(/^\./)
 end
 
-def count_length_filename(files)
-  files.max_by(&:length).length
-end
-
-def transpose_files(files)
+def build_file_tables(files)
   line_length = (files.size.to_f / COLUMN_LENGTH).ceil
 
-  nil_adding_count = line_length * COLUMN_LENGTH - files.size
-  nil_adding_count.times { files << nil }
+  adding_nil_count = line_length * COLUMN_LENGTH - files.size
+  adding_nil_count.times { files += [nil] }
 
   files.each_slice(line_length).to_a.transpose
 end
