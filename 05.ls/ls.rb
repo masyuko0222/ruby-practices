@@ -13,15 +13,6 @@ def main
   display_files(file_table, max_filename_length)
 end
 
-def display_files(file_table, filename_length)
-  file_table.each do |files|
-    files.each do |file|
-      print file.ljust(filename_length + 1) if file
-    end
-    print "\n"
-  end
-end
-
 def load_options
   opt = OptionParser.new
 
@@ -34,10 +25,12 @@ def load_options
 end
 
 def load_files(options)
+  all_files = Dir.entries('.').sort
+
   if options[:a]
-    Dir.entries('.').sort
+    all_files
   else
-    Dir.entries('.').sort.grep_v(/^\./)
+    all_files.grep_v(/^\./)
   end
 end
 
@@ -48,6 +41,15 @@ def build_file_table(files)
   files += Array.new(adding_nil_count)
 
   files.each_slice(line_length).to_a.transpose
+end
+
+def display_files(file_table, filename_length)
+  file_table.each do |files|
+    files.each do |file|
+      print file.ljust(filename_length + 1) if file
+    end
+    print "\n"
+  end
 end
 
 main
