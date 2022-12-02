@@ -5,28 +5,32 @@ require 'optparse'
 COLUMN_LENGTH = 3
 
 def main
-  loaded_files = load_files(add_option)
+  files = load_files(load_options)
 
-  max_filename_length = loaded_files.max_by(&:length).length
-  file_table = build_file_table(loaded_files)
+  max_filename_length = files.max_by(&:length).length
+  file_table = build_file_table(files)
 
+  display_files(file_table, max_filename_length)
+end
+
+def display_files(file_table, filename_length)
   file_table.each do |files|
     files.each do |file|
-      print file.ljust(max_filename_length + 1) if file
+      print file.ljust(filename_length + 1) if file
     end
     print "\n"
   end
 end
 
-def add_option
+def load_options
   opt = OptionParser.new
 
-  params = {}
+  options = {}
 
-  opt.on('-a', 'do not ignore entries starting with .') { |v| params[:a] = v }
+  opt.on('-a', 'do not ignore entries starting with .') { |v| options[:a] = v }
   opt.parse!(ARGV)
 
-  params
+  options
 end
 
 def load_files(options)
