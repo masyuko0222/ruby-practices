@@ -1,23 +1,37 @@
 # frozen_string_literal: true
 
+require 'optparse'
+
 COLUMN_LENGTH = 3
 
 def main
-  files = load_files
+  files = load_files(load_options)
 
   max_filename_length = files.max_by(&:length).length
   file_table = build_file_table(files)
 
-  file_table.each do |files|
-    files.each do |file|
-      print file.ljust(max_filename_length + 1) if file
-    end
-    print "\n"
-  end
+  display_files(file_table, max_filename_length)
 end
 
-def load_files
-  Dir.entries('.').sort.grep_v(/^\./)
+def load_options
+  opt = OptionParser.new
+
+  options = {}
+
+  opt.on('-a', 'do not ignore entries starting with .') { |v| options[:a] = v }
+  opt.parse!(ARGV)
+
+  options
+end
+
+def load_files(options)
+  all_files = Dir.entries('.').sort
+
+  if options[:a]
+    all_files
+  else
+    all_files.grep_v(/^\./)
+  end
 end
 
 def build_file_table(files)
@@ -27,6 +41,15 @@ def build_file_table(files)
   files += Array.new(adding_nil_count)
 
   files.each_slice(line_length).to_a.transpose
+end
+
+def display_files(file_table, filename_length)
+  file_table.each do |files|
+    files.each do |file|
+      print file.ljust(filename_length + 1) if file
+    end
+    print "\n"
+  end
 end
 
 main
