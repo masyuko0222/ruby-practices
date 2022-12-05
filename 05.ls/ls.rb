@@ -18,17 +18,18 @@ def load_options
 
   options = {}
 
-  opt.on('-a', 'do not ignore entries starting with .') { |v| options[:a] = v }
+  opt.on('-r', 'reverse order while sorting .') { |v| options[:r] = v }
   opt.parse!(ARGV)
 
   options
 end
 
 def load_files(options)
+  # 今後の課題でもドットを含むファイルを取得すると思うので、grep_vメソッドは条件分岐の段階で使用します。
   all_files = Dir.entries('.').sort
 
-  if options[:a]
-    all_files
+  if options[:r]
+    all_files.grep_v(/^\./).reverse
   else
     all_files.grep_v(/^\./)
   end
