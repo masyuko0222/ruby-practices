@@ -124,7 +124,7 @@ def convert_mode_to_string(file_mode)
   file_permissions = [file_mode[1], *file_mode[2].chars]
 
   permission_string = ''
-  
+
   3.times do |i|
     permission_string += file_permission_to_char[:"#{file_permissions[i]}"]
   end
