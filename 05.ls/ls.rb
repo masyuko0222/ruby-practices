@@ -85,14 +85,14 @@ def display_files_option_l(blocks_total, files, max_byte_to_chars_length)
     file_mode = scan_file_mode(file)
 
     file_mode_string   = convert_mode_to_string(file_mode)
-    number_of_hardlink = File.lstat(file.to_s).nlink.to_s
+    hardlink_count     = File.lstat(file.to_s).nlink.to_s
     user_name          = Etc.getpwuid(File.lstat(file.to_s).uid).name
     group_name         = Etc.getgrgid(File.lstat(file.to_s).gid).name
     file_size          = File.lstat(file.to_s).size
     time_stamp         = File.lstat(file.to_s).mtime.strftime('%b %e %H:%M')
 
     print "#{file_mode_string} "
-    print "#{number_of_hardlink} "
+    print "#{hardlink_count} "
     print "#{user_name} #{group_name} "
     print "#{file_size.to_s.rjust(max_byte_to_chars_length)} "
     print "#{time_stamp} "
