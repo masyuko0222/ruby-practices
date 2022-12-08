@@ -16,10 +16,10 @@ def main
     display_files_no_option(file_table, max_filename_length)
 
   elsif options[:l]
-    blocks_total = calculate_blocks_total(files)
     max_byte_to_chars_length = load_max_byte_to_chars_length(files)
 
-    display_files_option_l(blocks_total, files, max_byte_to_chars_length)
+    display_blocks_total(files)
+    display_files_option_l(files, max_byte_to_chars_length)
   end
 end
 
@@ -56,7 +56,7 @@ def display_files_no_option(file_table, filename_length)
   end
 end
 
-def calculate_blocks_total(files)
+def display_blocks_total(files)
   blocks_total = 0
 
   files.each do |file|
@@ -65,7 +65,8 @@ def calculate_blocks_total(files)
     blocks_total += block_size
   end
 
-  blocks_total
+  print "total #{blocks_total}"
+  print "\n"
 end
 
 def load_max_byte_to_chars_length(files)
@@ -77,10 +78,7 @@ def load_max_byte_to_chars_length(files)
   File.lstat(max_bytes_file).size.to_s.length
 end
 
-def display_files_option_l(blocks_total, files, max_byte_to_chars_length)
-  print "total #{blocks_total}"
-  print "\n"
-
+def display_files_option_l(files, max_byte_to_chars_length)
   files.each do |file|
     file_mode = scan_file_mode(file)
 
