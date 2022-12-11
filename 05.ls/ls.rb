@@ -4,6 +4,8 @@ require 'optparse'
 require 'etc'
 
 COLUMN_LENGTH = 3
+FILE_TYPE_TO_CHAR = { '01' => 'p', '02' => 'c', '04' => 'd', '6' => 'b', '10' => '-', '12' => 'l', '14' => 's' }.freeze
+FILE_PERMISSION_TO_CHAR = { '0' => '---', '1' => '--x', '2' => '-w-', '3' => '-wx', '4' => 'r--', '5' => 'r-x', '6' => 'rw-', '7' => 'rwx' }.freeze
 
 def main
   options = load_options
@@ -16,10 +18,10 @@ def main
     display_files_no_option(file_table, max_filename_length)
 
   elsif options[:l]
-    max_byte_to_chars_length = load_max_byte_to_chars_length(files)
+    max_byte_length = load_max_byte_length(files)
 
-    display_blocks_total(files)
-    display_files_option_l(files, max_byte_to_chars_length)
+    puts "total #{load_block_total(files)}"
+    display_files_option_l(files, max_byte_length)
   end
 end
 
@@ -56,81 +58,74 @@ def display_files_no_option(file_table, filename_length)
   end
 end
 
-def display_blocks_total(files)
-  blocks_total = 0
-
-  files.each do |file|
-    # blocksメソッドは1024バイトを1ブロックとして扱うが、lsコマンドでは512バイトで1ブロックのため、2で割る(環境変数により修正可能?)
-    block_size = File.lstat(file.to_s).blocks / 2
-    blocks_total += block_size
-  end
-
-  print "total #{blocks_total}"
-  print "\n"
+def load_file_lstat(file)
+  File.lstat(file)
 end
 
-def load_max_byte_to_chars_length(files)
-  max_bytes_file =
+def load_max_byte_length(files)
+  max_byte_file =
     files.max_by do |file|
-      File.lstat(file.to_s).size
+      load_file_lstat(file).size
     end
 
-  File.lstat(max_bytes_file).size.to_s.length
+  load_file_lstat(max_byte_file).size.to_s.length
 end
 
-def display_files_option_l(files, max_byte_to_chars_length)
-  files.each do |file|
-    file_mode = scan_file_mode(file)
-
-    file_mode_string   = convert_mode_to_string(file_mode)
-    hardlink_count     = File.lstat(file.to_s).nlink.to_s
-    user_name          = Etc.getpwuid(File.lstat(file.to_s).uid).name
-    group_name         = Etc.getgrgid(File.lstat(file.to_s).gid).name
-    file_size          = File.lstat(file.to_s).size
-    time_stamp         = File.lstat(file.to_s).mtime.strftime('%b %e %H:%M')
-
-    print "#{file_mode_string} "
-    print "#{hardlink_count} "
-    print "#{user_name} #{group_name} "
-    print "#{file_size.to_s.rjust(max_byte_to_chars_length)} "
-    print "#{time_stamp} "
-    print "#{file} "
-    print "-> File.readlink(file.to_s)" if File.symlink?(file.to_s)
-    print "\n"
+def load_block_total(files)
+  files.sum do |file|
+    # blocksメソッドは1024バイトを1ブロックとして扱うが、lsコマンドでは512バイトで1ブロックのため、2で割る
+    load_file_lstat(file).blocks / 2
   end
 end
 
-def scan_file_mode(file)
-  file_mode_0o = File.lstat(file.to_s).mode.to_s(8)
+def display_files_option_l(files, max_byte_length)
+  files.each do |file|
+    file_modes = scan_file_modes(file)
 
-  # directoryの場合は8進数表記だと5桁になってしまうため、6桁にしてからscanメソッドを使って2文字ずつに分割しました
-  scanned_mode = file_mode_0o.size < 6 ? "0#{file_mode_0o}".scan(/../) : file_mode_0o.scan(/../)
+    file_modes_string  = load_mode_to_file_type(file_modes) + load_mode_to_file_permission(file_modes)
+    hardlink_count     = load_file_lstat(file).nlink.to_s
+    user_name          = Etc.getpwuid(load_file_lstat(file).uid).name
+    group_name         = Etc.getgrgid(load_file_lstat(file).gid).name
+    file_size          = load_file_lstat(file).size
+    time_stamp         = load_file_lstat(file).mtime.strftime('%b %e %H:%M')
 
-  # "03"→"3"のように1桁は1桁表記にすることで、後のハッシュでのkeyの記述数を減らしました。
-  # (例) #BAD  {'01': 'p', '1': 'p', ...}
-  #      #GOOD {'1': 'p', ...}
-  scanned_mode.map { |mode| mode.delete_prefix('0') }
+    print "#{file_modes_string} "
+    print "#{hardlink_count} "
+    print "#{user_name} #{group_name} "
+    print "#{file_size.to_s.rjust(max_byte_length)} "
+    print "#{time_stamp} "
+    print "#{file} "
+    print "-> #{File.readlink(file.to_s)}" if File.symlink?(file.to_s)
+    puts
+  end
 end
 
-def convert_mode_to_string(file_mode)
-  # ファイルタイプ
-  file_type_to_char = { '1': 'p', '2': 'c', '4': 'd', '6': 'b', '10': '-', '12': 'l', '14': 's' }
+def scan_file_modes(file)
+  file_mode_0o = load_file_lstat(file).mode.to_s(8)
 
-  type_char = file_type_to_char[:"#{file_mode[0]}"]
+  # directoryの場合は8進数表記だと5桁になってしまうため、6桁にしてからscanメソッドを使って2文字ずつに分割しました
+  six_digit_mode = file_mode_0o.size < 6 ? "0#{file_mode_0o}" : file_mode_0o
 
-  # ファイルパーミッション
-  file_permission_to_char = { '0': '---', '1': '--x', '2': '-w-', '3': '-wx', '4': 'r--', '5': 'r-x', '6': 'rw-', '7': 'rwx' }
+  six_digit_mode.scan(/../)
+end
 
-  file_permissions = [file_mode[1], *file_mode[2].chars]
+def load_mode_to_file_type(file_modes)
+  FILE_TYPE_TO_CHAR[file_modes[0]]
+end
+
+def load_mode_to_file_permission(file_modes)
+  file_permissions = [file_modes[1], *file_modes[2].chars]
+
+  # ornerの権限が1桁の値でも、先頭に0を加えた2桁表記になってしまうため、先頭の0を削除しました
+  file_permissions[0].delete_prefix!('0')
 
   permission_string = ''
 
   3.times do |i|
-    permission_string += file_permission_to_char[:"#{file_permissions[i]}"]
+    permission_string += FILE_PERMISSION_TO_CHAR[file_permissions[i]]
   end
 
-  # ファイルタイプ + ファイルパーミッション
-  type_char + permission_string
+  permission_string
 end
 
 main
