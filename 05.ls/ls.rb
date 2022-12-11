@@ -19,8 +19,9 @@ def main
 
   elsif options[:l]
     max_byte_length = load_max_byte_length(files)
+    block_total = load_block_total(files)
 
-    puts "total #{load_block_total(files)}"
+    puts "total #{block_total}"
     display_files_option_l(files, max_byte_length)
   end
 end
