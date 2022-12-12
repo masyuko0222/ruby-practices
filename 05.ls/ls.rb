@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+require 'debug'
 
 require 'optparse'
 require 'etc'
@@ -33,7 +34,7 @@ def main
       file_lstat = File.lstat(file)
       file_mode = file_lstat.mode
 
-      display_file_option_l(file, file_mode)
+      display_file_option_l(file, file_lstat, file_mode)
     end
   else
     file_table = build_file_table(files)
@@ -58,11 +59,11 @@ def load_files
   Dir.entries('.').sort.grep_v(/^\./)
 end
 
-def display_file_option_l(file, file_mode)
+def display_file_option_l(file, file_lstat, file_mode)
   file_type = load_file_type(file)
   file_permission = concat_file_permission(file_mode)
-  user_name = convert_uid_to_name(file)
-  group_name = convert_gid_to_name(file)
+  user_name = convert_uid_to_name(file_lstat)
+  group_name = convert_gid_to_name(file_lstat)
 
   print file_type
   print file_permission
@@ -81,12 +82,12 @@ def concat_file_permission(file_mode)
   (-3..-1).map { |i| FILE_PERMISSION_TO_CHAR[file_0o_mode[i]] }.join
 end
 
-def convert_uid_to_name(file)
-  Etc.getpwuid(file.uid).name
+def convert_uid_to_name(file_lstat)
+  Etc.getpwuid(file_lstat.uid).name
 end
 
-def convert_gid_to_name(file)
-  Etc.getgrgid(file.gid).name
+def convert_gid_to_name(file_lstat)
+  Etc.getgrgid(file_lstat.gid).name
 end
 
 def build_file_table(files)
