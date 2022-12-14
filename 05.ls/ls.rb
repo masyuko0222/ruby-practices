@@ -1,5 +1,4 @@
 # frozen_string_literal: true
-require 'debug'
 
 require 'optparse'
 require 'etc'
@@ -14,6 +13,7 @@ FILE_TYPE_TO_CHAR = {
   'link' => 'l',
   'socket' => 's',
 }.freeze
+
 FILE_PERMISSION_TO_CHAR = {
   '0' => '---',
   '1' => '--x',
@@ -27,14 +27,23 @@ FILE_PERMISSION_TO_CHAR = {
 
 def main
   options = load_options
-  files = load_files
+  files   = load_files
 
   if options[:l]
-    files.each do |file|
-      file_lstat = File.lstat(file)
-      file_mode = file_lstat.mode
+    file_lstats = convert_files_to_lstats(files)
+    total_block = sum_all_block_size(file_lstats)
 
-      display_file_option_l(file, file_lstat, file_mode)
+    puts "total #{total_block}"
+
+    max_byte_length = file_lstats.max_by(&:size).size.to_s.length
+
+    file_lstats.size.times do |i|
+      file_lstat = file_lstats[i]
+      file_name  = files[i]
+
+      file_lstat_informations = create_lstat_informations_hash(file_lstat)
+
+      display_file_information(file_lstat_informations, max_byte_length, file_name)
     end
   else
     file_table = build_file_table(files)
@@ -59,21 +68,37 @@ def load_files
   Dir.entries('.').sort.grep_v(/^\./)
 end
 
-def display_file_option_l(file, file_lstat, file_mode)
-  file_type = load_file_type(file)
-  file_permission = concat_file_permission(file_mode)
-  user_name = convert_uid_to_name(file_lstat)
-  group_name = convert_gid_to_name(file_lstat)
-
-  print file_type
-  print file_permission
-  print " #{user_name}"
-  print " #{group_name}"
-  puts
+def convert_files_to_lstats(files)
+  files.map { |file| File.lstat(file) }
 end
 
-def load_file_type(file)
-  FILE_TYPE_TO_CHAR[File.ftype(file)]
+def sum_all_block_size(file_lstats)
+  file_lstats.sum do |lstat|
+    # blocksメソッドは1024バイトを1ブロックとして扱うが、lsコマンドでは512バイトで1ブロックのため、2で割る
+    lstat.blocks / 2
+  end
+end
+
+def create_lstat_informations_hash(file_lstat)
+  file_mode = file_lstat.mode
+
+  file_type       = FILE_TYPE_TO_CHAR[file_lstat.ftype]
+  file_permission = concat_file_permission(file_mode)
+  hardlink_count  = file_lstat.nlink
+  user_name       = Etc.getpwuid(file_lstat.uid).name
+  group_name      = Etc.getgrgid(file_lstat.gid).name
+  file_size       = file_lstat.size
+  time_stamp      = file_lstat.mtime.strftime('%b %e %H:%M')
+
+  {
+    file_type: file_type,
+    file_permission: file_permission,
+    hardlink_count: hardlink_count,
+    user_name: user_name,
+    group_name: group_name,
+    file_size: file_size,
+    time_stamp: time_stamp,
+  }
 end
 
 def concat_file_permission(file_mode)
@@ -82,12 +107,17 @@ def concat_file_permission(file_mode)
   (-3..-1).map { |i| FILE_PERMISSION_TO_CHAR[file_0o_mode[i]] }.join
 end
 
-def convert_uid_to_name(file_lstat)
-  Etc.getpwuid(file_lstat.uid).name
-end
-
-def convert_gid_to_name(file_lstat)
-  Etc.getgrgid(file_lstat.gid).name
+def display_file_information(file_lstat_informations, max_byte_length, file_name)
+  print file_lstat_informations[:file_type]
+  print file_lstat_informations[:file_permission]
+  print " #{file_lstat_informations[:hardlink_count]}"
+  print " #{file_lstat_informations[:user_name]}"
+  print " #{file_lstat_informations[:group_name]}"
+  print " #{file_lstat_informations[:file_size].to_s.rjust(max_byte_length)}"
+  print " #{file_lstat_informations[:time_stamp]}"
+  print " #{file_name}"
+  print " -> #{File.readlink(file_name)}" if File.symlink?(file_name)
+  puts
 end
 
 def build_file_table(files)
@@ -107,6 +137,5 @@ def display_files_no_option(file_table, filename_length)
     print "\n"
   end
 end
-
 
 main
