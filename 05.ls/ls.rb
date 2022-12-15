@@ -4,6 +4,7 @@ require 'optparse'
 require 'etc'
 
 COLUMN_LENGTH = 3
+
 FILE_TYPE_TO_CHAR = {
   'fifo' => 'p',
   'characterSpecial' => 'c',
@@ -11,7 +12,7 @@ FILE_TYPE_TO_CHAR = {
   'blockSpecial' => 'b',
   'file' => '-',
   'link' => 'l',
-  'socket' => 's',
+  'socket' => 's'
 }.freeze
 
 FILE_PERMISSION_TO_CHAR = {
@@ -22,29 +23,21 @@ FILE_PERMISSION_TO_CHAR = {
   '4' => 'r--',
   '5' => 'r-x',
   '6' => 'rw-',
-  '7' => 'rwx',
+  '7' => 'rwx'
 }.freeze
 
 def main
   options = load_options
-  files   = load_files
+  files = load_files
 
   if options[:l]
-    file_lstats = convert_files_to_lstats(files)
-    total_block = sum_all_block_size(file_lstats)
+    file_informations = []
 
-    puts "total #{total_block}"
-
-    max_byte_length = file_lstats.max_by(&:size).size.to_s.length
-
-    file_lstats.size.times do |i|
-      file_lstat = file_lstats[i]
-      file_name  = files[i]
-
-      file_lstat_informations = create_lstat_informations_hash(file_lstat)
-
-      display_file_information(file_lstat_informations, max_byte_length, file_name)
+    files.each do |file|
+      file_informations << add_file_informations(file)
     end
+
+    display_files_l_option(file_informations)
   else
     file_table = build_file_table(files)
     max_filename_length = files.max_by(&:length).length
@@ -68,36 +61,24 @@ def load_files
   Dir.entries('.').sort.grep_v(/^\./)
 end
 
-def convert_files_to_lstats(files)
-  files.map { |file| File.lstat(file) }
-end
-
-def sum_all_block_size(file_lstats)
-  file_lstats.sum do |lstat|
-    # blocksメソッドは1024バイトを1ブロックとして扱うが、lsコマンドでは512バイトで1ブロックのため、2で割る
-    lstat.blocks / 2
-  end
-end
-
-def create_lstat_informations_hash(file_lstat)
+def add_file_informations(file)
+  file_name = file.to_s
+  file_lstat = File.lstat(file)
   file_mode = file_lstat.mode
 
-  file_type       = FILE_TYPE_TO_CHAR[file_lstat.ftype]
-  file_permission = concat_file_permission(file_mode)
-  hardlink_count  = file_lstat.nlink
-  user_name       = Etc.getpwuid(file_lstat.uid).name
-  group_name      = Etc.getgrgid(file_lstat.gid).name
-  file_size       = file_lstat.size
-  time_stamp      = file_lstat.mtime.strftime('%b %e %H:%M')
-
   {
-    file_type: file_type,
-    file_permission: file_permission,
-    hardlink_count: hardlink_count,
-    user_name: user_name,
-    group_name: group_name,
-    file_size: file_size,
-    time_stamp: time_stamp,
+    file_type: FILE_TYPE_TO_CHAR[file_lstat.ftype],
+
+    user_name: Etc.getpwuid(file_lstat.uid).name,
+    group_name: Etc.getgrgid(file_lstat.gid).name,
+
+    block_size: file_lstat.blocks,
+    hardlink_count: file_lstat.nlink,
+    time_stamp: file_lstat.mtime.strftime('%b %e %H:%M'),
+    file_size: file_lstat.size,
+    file_name: file_name,
+
+    file_permission: concat_file_permission(file_mode)
   }
 end
 
@@ -107,17 +88,24 @@ def concat_file_permission(file_mode)
   (-3..-1).map { |i| FILE_PERMISSION_TO_CHAR[file_0o_mode[i]] }.join
 end
 
-def display_file_information(file_lstat_informations, max_byte_length, file_name)
-  print file_lstat_informations[:file_type]
-  print file_lstat_informations[:file_permission]
-  print " #{file_lstat_informations[:hardlink_count]}"
-  print " #{file_lstat_informations[:user_name]}"
-  print " #{file_lstat_informations[:group_name]}"
-  print " #{file_lstat_informations[:file_size].to_s.rjust(max_byte_length)}"
-  print " #{file_lstat_informations[:time_stamp]}"
-  print " #{file_name}"
-  print " -> #{File.readlink(file_name)}" if File.symlink?(file_name)
-  puts
+def display_files_l_option(file_informations)
+  total_block = file_informations.map { |information| information[:block_size] / 2 }.sum
+  max_byte_length = file_informations.map { |information| information[:file_size] }.max.to_s.length
+
+  puts "total #{total_block}"
+
+  file_informations.each do |information|
+    print information[:file_type]
+    print information[:file_permission]
+    print " #{information[:hardlink_count]}"
+    print " #{information[:user_name]}"
+    print " #{information[:group_name]}"
+    print " #{information[:file_size].to_s.rjust(max_byte_length)}"
+    print " #{information[:time_stamp]}"
+    print " #{information[:file_name]}"
+    print " -> #{File.readlink(information[:file_name])}" if File.symlink?(information[:file_name])
+    puts
+  end
 end
 
 def build_file_table(files)
