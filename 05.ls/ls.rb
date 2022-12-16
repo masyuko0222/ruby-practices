@@ -31,15 +31,14 @@ def main
   files = load_files
 
   if options[:l]
-    file_informations = []
+    file_info_list =
+      files.map do |file|
+        build_info_list(file)
+      end
 
-    files.each do |file|
-      file_informations << add_file_informations(file)
-    end
-
-    display_files_l_option(file_informations)
+    display_files_l_option(file_info_list)
   else
-    file_table = build_file_table(files)
+    file_table = build_file_info_hash(files)
     max_filename_length = files.max_by(&:length).length
 
     display_files_no_option(file_table, max_filename_length)
@@ -61,7 +60,7 @@ def load_files
   Dir.entries('.').sort.grep_v(/^\./)
 end
 
-def add_file_informations(file)
+def build_info_list(file)
   file_name = file.to_s
   file_lstat = File.lstat(file)
   file_mode = file_lstat.mode
@@ -88,13 +87,13 @@ def concat_file_permission(file_mode)
   (-3..-1).map { |i| FILE_PERMISSION_TO_CHAR[file_0o_mode[i]] }.join
 end
 
-def display_files_l_option(file_informations)
-  total_block = file_informations.map { |information| information[:block_size] / 2 }.sum
-  max_byte_length = file_informations.map { |information| information[:file_size] }.max.to_s.length
+def display_files_l_option(file_info_list)
+  total_block = file_info_list.map{ |information| information[:block_size] / 2 }.sum
+  max_byte_length = file_info_list.map { |information| information[:file_size] }.max.to_s.length
 
   puts "total #{total_block}"
 
-  file_informations.each do |information|
+  file_info_list.each do |information|
     print information[:file_type]
     print information[:file_permission]
     print " #{information[:hardlink_count]}"
@@ -108,7 +107,7 @@ def display_files_l_option(file_informations)
   end
 end
 
-def build_file_table(files)
+def build_file_info_hash(files)
   line_length = (files.size.to_f / COLUMN_LENGTH).ceil
 
   adding_nil_count = line_length * COLUMN_LENGTH - files.size
