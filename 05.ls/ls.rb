@@ -28,7 +28,7 @@ FILE_PERMISSION_TO_CHAR = {
 
 def main
   options = load_options
-  files = load_files
+  files = load_files(options)
 
   if options[:l]
     file_info_list =
@@ -50,14 +50,27 @@ def load_options
 
   options = {}
 
+  opt.on('-a', 'do not ignore entries starting with .') { |v| options[:a] = v }
+  opt.on('-r', 'reverse order while sorting .') { |v| options[:r] = v }
   opt.on('-l', 'use a long listing format') { |v| options[:l] = v }
   opt.parse!(ARGV)
 
   options
 end
 
-def load_files
-  Dir.entries('.').sort.grep_v(/^\./)
+def load_files(options)
+  all_files = Dir.entries('.').sort
+
+  picked_files =
+    if options[:a]
+      all_files
+    else
+      all_files.grep_v(/^\./)
+    end
+
+  reversed_files = picked_files.reverse if options[:r]
+
+  reversed_files || picked_files
 end
 
 def build_file_info(file)
@@ -88,7 +101,7 @@ def concat_file_permission(file_mode)
 end
 
 def display_files_in_long_format(file_info_list)
-  total_block = file_info_list.map{ |information| information[:block_size] / 2 }.sum
+  total_block = file_info_list.map { |information| information[:block_size] / 2 }.sum
   max_byte_length = file_info_list.map { |information| information[:file_size] }.max.to_s.length
 
   puts "total #{total_block}"
