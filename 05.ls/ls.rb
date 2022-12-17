@@ -33,15 +33,15 @@ def main
   if options[:l]
     file_info_list =
       files.map do |file|
-        build_info_list(file)
+        build_file_info(file)
       end
 
-    display_files_l_option(file_info_list)
+    display_files_in_long_format(file_info_list)
   else
-    file_table = build_file_info_hash(files)
+    file_table = build_file_table(files)
     max_filename_length = files.max_by(&:length).length
 
-    display_files_no_option(file_table, max_filename_length)
+    display_files_in_short_format(file_table, max_filename_length)
   end
 end
 
@@ -60,7 +60,7 @@ def load_files
   Dir.entries('.').sort.grep_v(/^\./)
 end
 
-def build_info_list(file)
+def build_file_info(file)
   file_name = file.to_s
   file_lstat = File.lstat(file)
   file_mode = file_lstat.mode
@@ -87,7 +87,7 @@ def concat_file_permission(file_mode)
   (-3..-1).map { |i| FILE_PERMISSION_TO_CHAR[file_0o_mode[i]] }.join
 end
 
-def display_files_l_option(file_info_list)
+def display_files_in_long_format(file_info_list)
   total_block = file_info_list.map{ |information| information[:block_size] / 2 }.sum
   max_byte_length = file_info_list.map { |information| information[:file_size] }.max.to_s.length
 
@@ -107,7 +107,7 @@ def display_files_l_option(file_info_list)
   end
 end
 
-def build_file_info_hash(files)
+def build_file_table(files)
   line_length = (files.size.to_f / COLUMN_LENGTH).ceil
 
   adding_nil_count = line_length * COLUMN_LENGTH - files.size
@@ -116,7 +116,7 @@ def build_file_info_hash(files)
   files.each_slice(line_length).to_a.transpose
 end
 
-def display_files_no_option(file_table, filename_length)
+def display_files_in_short_format(file_table, filename_length)
   file_table.each do |files|
     files.each do |file|
       print file.ljust(filename_length + 1) if file
