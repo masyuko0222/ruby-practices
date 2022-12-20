@@ -50,48 +50,15 @@ def load_files(options)
   all_files = Dir.entries('.').sort
 
   filtered_files =
-    if options[:a]
-      all_files
-    else
-      all_files.grep_v(/^\./)
-    end
+    options[:a] ? all_files : all_files.grep_v(/^\./)
 
-    options[:r] ? filtered_files.reverse : filtered_files
-end
-
-def build_file_info(files)
-  files.map do |file|
-    file_name = file.to_s
-    file_lstat = File.lstat(file)
-    file_mode = file_lstat.mode
-
-    {
-      file_type: FILE_TYPE_TO_CHAR[file_lstat.ftype],
-
-      user_name: Etc.getpwuid(file_lstat.uid).name,
-      group_name: Etc.getgrgid(file_lstat.gid).name,
-
-      block_size: file_lstat.blocks,
-      hardlink_count: file_lstat.nlink,
-      time_stamp: file_lstat.mtime.strftime('%b %e %H:%M'),
-      file_size: file_lstat.size,
-      file_name: file_name,
-
-      file_permission: concat_file_permission(file_mode)
-    }
-  end
-end
-
-def concat_file_permission(file_mode)
-  file_0o_mode = file_mode.to_s(8)
-
-  (-3..-1).map { |i| FILE_PERMISSION_TO_CHAR[file_0o_mode[i]] }.join
+  options[:r] ? filtered_files.reverse : filtered_files
 end
 
 def display_files_in_long_format(files)
   file_info_list = build_file_info(files)
 
-  total_block = file_info_list.map{ |information| information[:block_size] / 2 }.sum
+  total_block = file_info_list.map { |information| information[:block_size] / 2 }.sum
   max_byte_length = file_info_list.map { |information| information[:file_size] }.max.to_s.length
 
   puts "total #{total_block}"
@@ -110,6 +77,45 @@ def display_files_in_long_format(files)
   end
 end
 
+def build_file_info(files)
+  files.map do |file|
+    file_lstat = File.lstat(file)
+
+    {
+      file_type: FILE_TYPE_TO_CHAR[file_lstat.ftype],
+
+      user_name: Etc.getpwuid(file_lstat.uid).name,
+      group_name: Etc.getgrgid(file_lstat.gid).name,
+
+      block_size: file_lstat.blocks,
+      hardlink_count: file_lstat.nlink,
+      time_stamp: file_lstat.mtime.strftime('%b %e %H:%M'),
+      file_size: file_lstat.size,
+      file_name: file.to_s,
+
+      file_permission: concat_file_permission(file_lstat.mode)
+    }
+  end
+end
+
+def concat_file_permission(file_mode)
+  file_0o_mode = file_mode.to_s(8)
+
+  (-3..-1).map { |i| FILE_PERMISSION_TO_CHAR[file_0o_mode[i]] }.join
+end
+
+def display_files_in_short_format(files)
+  file_table = build_file_table(files)
+  max_filename_length = files.max_by(&:length).length
+
+  file_table.each do |files_in_line|
+    files_in_line.each do |file|
+      print file.ljust(max_filename_length + 1) if file
+    end
+    print "\n"
+  end
+end
+
 def build_file_table(files)
   line_length = (files.size.to_f / COLUMN_LENGTH).ceil
 
@@ -117,18 +123,6 @@ def build_file_table(files)
   files += Array.new(adding_nil_count)
 
   files.each_slice(line_length).to_a.transpose
-end
-
-def display_files_in_short_format(files)
-  file_table = build_file_table(files)
-  max_filename_length = files.max_by(&:length).length
-
-  file_table.each do |files|
-    files.each do |file|
-      print file.ljust(max_filename_length + 1) if file
-    end
-    print "\n"
-  end
 end
 
 main
