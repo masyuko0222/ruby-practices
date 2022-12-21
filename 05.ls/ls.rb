@@ -38,8 +38,8 @@ def load_options
 
   options = {}
 
-  opt.on('-a', 'do not ignore entries starting with .') { |v| options[:a] = v }
-  opt.on('-r', 'reverse order while sorting .') { |v| options[:r] = v }
+  opt.on('-a', 'do not ignore entries starting with') { |v| options[:a] = v }
+  opt.on('-r', 'reverse order while sorting') { |v| options[:r] = v }
   opt.on('-l', 'use a long listing format') { |v| options[:l] = v }
   opt.parse!(ARGV)
 
