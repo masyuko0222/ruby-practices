@@ -49,8 +49,7 @@ end
 def load_files(options)
   all_files = Dir.entries('.').sort
 
-  filtered_files =
-    options[:a] ? all_files : all_files.grep_v(/^\./)
+  filtered_files = options[:a] ? all_files : all_files.grep_v(/^\./)
 
   options[:r] ? filtered_files.reverse : filtered_files
 end
@@ -99,7 +98,7 @@ def build_file_info(files)
 end
 
 def concat_file_permission(file_mode)
-  file_0o_mode = file_mode.to_s(8)
+  file_octal_mode = file_mode.to_s(8)
 
   (-3..-1).map { |i| FILE_PERMISSION_TO_CHAR[file_0o_mode[i]] }.join
 end
