@@ -100,7 +100,7 @@ end
 def concat_file_permission(file_mode)
   file_octal_mode = file_mode.to_s(8)
 
-  (-3..-1).map { |i| FILE_PERMISSION_TO_CHAR[file_0o_mode[i]] }.join
+  (-3..-1).map { |i| FILE_PERMISSION_TO_CHAR[file_octal_mode[i]] }.join
 end
 
 def display_files_in_short_format(files)
