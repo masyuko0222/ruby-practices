@@ -74,9 +74,9 @@ end
 def print_total(options, wc_info_list)
   total_data = build_total_data(wc_info_list)
 
-  print total_data[:line_count].to_s.rjust(4) if options.size.zero? || options[:l]
-  print " #{total_data[:word_count].to_s.rjust(4)}" if options.size.zero? || options[:w]
-  print " #{total_data[:byte_size].to_s.rjust(4)}" if options.size.zero? || options[:c]
+  print total_data[:line_count].to_s.rjust(4) if options.empty? || options[:l]
+  print " #{total_data[:word_count].to_s.rjust(4)}" if options.empty? || options[:w]
+  print " #{total_data[:byte_size].to_s.rjust(4)}" if options.empty? || options[:c]
   print ' total'
 end
 
