@@ -7,7 +7,7 @@ def main
 
   # 配列オブジェクトで処理を行うため、File.open(0)も配列に格納する
   input_data =
-    ARGV.size.positive? ? ARGV.map { |file_name| File.open(file_name) } : [File.open(0)]
+    !ARGV.empty? ? ARGV.map { |file_name| File.open(file_name) } : [File.open(0)]
 
   display_in_wc_format(options, input_data)
 end
@@ -30,10 +30,10 @@ def display_in_wc_format(options, input_data)
   wc_info_list = build_wc_info_list(input_data)
 
   wc_info_list.each do |info|
-    print_line_count(info) if options.size.zero? || options[:l]
-    print_word_count(info) if options.size.zero? || options[:w]
-    print_byte_size(info) if options.size.zero? || options[:c]
-    print_file_name(info) if ARGV.size.positive?
+    print_line_count(info) if options.empty? || options[:l]
+    print_word_count(info) if options.empty? || options[:w]
+    print_byte_size(info) if options.empty? || options[:c]
+    print_file_name(info) if !ARGV.empty?
     puts
   end
 
@@ -42,7 +42,6 @@ end
 
 def build_wc_info_list(input_data)
   input_data.map do |data|
-    # readメソッドはコードor標準入力を、丸々１つのStringオブジェクトにする。改行文字(\n)も含む。
     data_to_string = data.read
 
     wc_info = {}
@@ -50,7 +49,7 @@ def build_wc_info_list(input_data)
     wc_info[:line_count] = data_to_string.lines.count
     wc_info[:word_count] = data_to_string.split(' ').count
     wc_info[:byte_size] = data_to_string.bytesize
-    wc_info[:file_name] = File.basename(data) if ARGV.size.positive?
+    wc_info[:file_name] = File.basename(data) if !ARGV.empty?
 
     wc_info
   end
@@ -69,7 +68,7 @@ def print_byte_size(info)
 end
 
 def print_file_name(info)
-  print " #{info[:file_name]}" if ARGV.size.positive?
+  print " #{info[:file_name]}" if !ARGV.empty?
 end
 
 def print_total(options, wc_info_list)
