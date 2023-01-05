@@ -7,7 +7,7 @@ def main
 
   # 配列オブジェクトで処理を行うため、File.open(0)も配列に格納する
   input_data =
-    !ARGV.empty? ? ARGV.map { |file_name| File.open(file_name) } : [File.open(0)]
+    ARGV.empty? ? [File.open(0)]: ARGV.map { |file_name| File.open(file_name) }
 
   display_in_wc_format(options, input_data)
 end
@@ -33,7 +33,7 @@ def display_in_wc_format(options, input_data)
     print_line_count(info) if options.empty? || options[:l]
     print_word_count(info) if options.empty? || options[:w]
     print_byte_size(info) if options.empty? || options[:c]
-    print_file_name(info) if !ARGV.empty?
+    print_file_name(info) if ARGV.size.positive?
     puts
   end
 
@@ -49,7 +49,7 @@ def build_wc_info_list(input_data)
     wc_info[:line_count] = data_to_string.lines.count
     wc_info[:word_count] = data_to_string.split(' ').count
     wc_info[:byte_size] = data_to_string.bytesize
-    wc_info[:file_name] = File.basename(data) if !ARGV.empty?
+    wc_info[:file_name] = File.basename(data) if ARGV.size.positive?
 
     wc_info
   end
@@ -68,7 +68,7 @@ def print_byte_size(info)
 end
 
 def print_file_name(info)
-  print " #{info[:file_name]}" if !ARGV.empty?
+  print " #{info[:file_name]}" if ARGV.size.positive?
 end
 
 def print_total(options, wc_info_list)
