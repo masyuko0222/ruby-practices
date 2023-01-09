@@ -46,7 +46,7 @@ end
 def build_wc_counts_list(input_data)
   input_data.map do |data|
     # File.readは、ファイル(標準入力)内のテキストを丸々Stringオブジェクトとして返す。\nのような改行文字も含む。
-    data_to_string = data.read
+    read_content_string = data.read
 
     wc_info = {}
 
