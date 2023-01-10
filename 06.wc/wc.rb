@@ -50,12 +50,12 @@ def build_wc_counts_list(input_data)
 
     wc_info = {}
 
-    wc_info[:line_count] = data_to_string.lines.count
-    wc_info[:word_count] = data_to_string.split(' ').count
-    wc_info[:byte_size] = data_to_string.bytesize
+    wc_info[:line_count] = read_content_string.lines.count
+    wc_info[:word_count] = read_content_string.split(' ').count
+    wc_info[:byte_size] = read_content_string.bytesize
 
     # 標準入力を利用する場合、File.basenameが取得できないため、空のハッシュを作ってから、条件分岐でFile.basenameを格納する処理にしました
-    wc_info[:file_name] = File.basename(data) if ARGV.size.positive?
+    wc_info[:file_name] = File.basename(content) if ARGV.size.positive?
 
     wc_info
   end
