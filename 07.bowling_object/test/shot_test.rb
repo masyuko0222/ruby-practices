@@ -1,24 +1,22 @@
-#frozen_string_literal: true
-
 require 'minitest/autorun'
 require_relative '../lib/shot'
 
 class ShotTest < Minitest::Test
-  def test_pin_is_X
+  def test_case_X
     shot = Shot.new('X')
 
-    assert_equal 10, shot.convert_pin_to_integer
+    assert_equal 10, shot.score
   end
 
-  def test_pin_is_0
+  def test_case_0
     shot = Shot.new('0')
 
-    assert_equal 0, shot.convert_pin_to_integer
+    assert_equal 0, shot.score
   end
 
-  def test_pin_is_7
-    shot = Shot.new('7')
+  def test_case_5
+    shot = Shot.new('5')
 
-    assert_equal 7, shot.convert_pin_to_integer
+    assert_equal 5, shot.score
   end
 end

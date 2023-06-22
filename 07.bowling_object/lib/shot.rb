@@ -1,12 +1,15 @@
 #frozen_string_literal: true
 
 class Shot
-  def initialize(pin)
-    @pin = pin
+  attr_reader :mark
+
+  def initialize(mark)
+    @mark = mark
   end
 
-  def convert_pin_to_integer
-    return 10 if @pin == 'X'
-    @pin.to_i
+  def score
+    return 10 if mark == 'X'
+
+    mark.to_i
   end
 end
