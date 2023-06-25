@@ -1,4 +1,4 @@
-#frozen_string_literal
+# frozen_string_literal:true
 
 require_relative 'shot'
 
@@ -10,6 +10,10 @@ class Frame
   end
 
   def score
-    [@first_shot, @second_shot, @third_shot].collect.sum(&:score)
+    shot_scores.sum
+  end
+
+  def shot_scores
+    [@first_shot, @second_shot, @third_shot].reject(&:nil?).map(&:score)
   end
 end
