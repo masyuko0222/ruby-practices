@@ -1,4 +1,4 @@
-#frozen_string_literal
+# frozen_string_literal:true
 
 class Shot
   def initialize(mark)
@@ -9,5 +9,9 @@ class Shot
     return 10 if @mark == 'X'
 
     @mark.to_i
+  end
+
+  def nil?
+    @mark.nil
   end
 end
