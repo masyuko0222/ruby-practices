@@ -12,6 +12,6 @@ class Shot
   end
 
   def nil?
-    @mark.nil
+    @mark.nil?
   end
 end
