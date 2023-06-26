@@ -10,10 +10,11 @@ class Frame
   end
 
   def score
+    shot_scores = store_shot_scores
     shot_scores.sum
   end
 
-  def shot_scores
+  def store_shot_scores
     [@first_shot, @second_shot, @third_shot].reject(&:nil?).map(&:score)
   end
 end
