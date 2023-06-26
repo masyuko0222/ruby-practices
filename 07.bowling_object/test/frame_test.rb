@@ -39,4 +39,16 @@ class FrameTest < Minitest::Test
 
     assert_equal [10, 10, 10], frame.store_shot_scores
   end
+
+  def test_strike?
+    frame = Frame.new(10)
+
+    assert frame.strike?
+  end
+
+  def test_spea?
+    frame = Frame.new(6, 4)
+
+    assert frame.spea?
+  end
 end

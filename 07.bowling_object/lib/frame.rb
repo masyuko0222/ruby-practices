@@ -17,4 +17,12 @@ class Frame
   def store_shot_scores
     [@first_shot, @second_shot, @third_shot].reject(&:nil?).map(&:score)
   end
+
+  def strike?
+    @first_shot.score == 10
+  end
+
+  def spea?
+    @first_shot.score + @second_shot.score + @third_shot.score == 10
+  end
 end
