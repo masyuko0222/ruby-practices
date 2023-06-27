@@ -21,7 +21,9 @@ class Game
       scores_for_bonus = [next_frame, after_next_frame].compact.map(&:store_shot_scores).flatten
 
       score +=
-        if frame.strike?
+        if frame_number == 9 # last frame
+          frame.score
+        elsif frame.strike?
           frame.score + scores_for_bonus.slice(0, 2).sum
         elsif frame.spea?
           frame.score + scores_for_bonus.fetch(0)
