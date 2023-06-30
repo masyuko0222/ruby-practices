@@ -44,7 +44,7 @@ class Game
 
       if frames.size < 9
         if temporary_marks.size >= 2 || mark == 'X'
-          frames << Frame.new(*temporary_marks).dup
+          frames << Frame.new(*temporary_marks)
           temporary_marks.clear
         end
       elsif index == @marks.count - 1
