@@ -40,7 +40,7 @@ class Game
         frame.score
       elsif frame.strike?
         frame.score + scores_for_bonus.slice(0, 2).sum
-      elsif frame.spea?
+      elsif frame.spare?
         frame.score + scores_for_bonus.fetch(0)
       else
         frame.score
