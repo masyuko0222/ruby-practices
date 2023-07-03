@@ -1,7 +1,6 @@
 # frozen_string_literal:true
 
 require_relative 'frame'
-require 'debug'
 
 class Game
   def initialize(marks)
@@ -31,20 +30,10 @@ class Game
   def score
     10.times.sum do |frame_number|
       frame, next_frame, after_next_frame = @frames.slice(frame_number, 3)
-      next_frame ||= nil
-      after_next_frame ||= nil
 
-      scores_for_bonus = [next_frame, after_next_frame].compact.map(&:store_shot_scores).flatten
+      scores_for_bonus = frame.store_bonus_scores(next_frame, after_next_frame)
 
-      if frame_number == 9 # last frame
-        frame.score
-      elsif frame.strike?
-        frame.score + scores_for_bonus.slice(0, 2).sum
-      elsif frame.spare?
-        frame.score + scores_for_bonus.fetch(0)
-      else
-        frame.score
-      end
+      frame.calculate_score_with_bonus(frame_number, scores_for_bonus)
     end
   end
 end
