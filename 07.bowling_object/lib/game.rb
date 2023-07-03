@@ -29,27 +29,22 @@ class Game
   end
 
   def score
-    score = 0
-
-    10.times do |frame_number|
+    10.times.sum do |frame_number|
       frame, next_frame, after_next_frame = @frames.slice(frame_number, 3)
       next_frame ||= nil
       after_next_frame ||= nil
 
       scores_for_bonus = [next_frame, after_next_frame].compact.map(&:store_shot_scores).flatten
 
-      score +=
-        if frame_number == 9 # last frame
-          frame.score
-        elsif frame.strike?
-          frame.score + scores_for_bonus.slice(0, 2).sum
-        elsif frame.spea?
-          frame.score + scores_for_bonus.fetch(0)
-        else
-          frame.score
-        end
+      if frame_number == 9 # last frame
+        frame.score
+      elsif frame.strike?
+        frame.score + scores_for_bonus.slice(0, 2).sum
+      elsif frame.spea?
+        frame.score + scores_for_bonus.fetch(0)
+      else
+        frame.score
+      end
     end
-
-    score
   end
 end
