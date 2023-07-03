@@ -21,6 +21,7 @@ class Frame
     end
   end
 
+  # bonus_scores
   def store_bonus_scores(next_frame = nil, after_next_frame = nil)
     [next_frame, after_next_frame].compact.map(&:store_shot_scores).flatten
   end
