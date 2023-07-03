@@ -12,14 +12,12 @@ class Frame
   def calculate_score_with_bonus(frame_number, scores_for_bonus)
     if frame_number == 9 # last frame
       score
+    elsif strike?
+      score + scores_for_bonus.slice(0, 2).sum
+    elsif spare?
+      score + scores_for_bonus.fetch(0)
     else
-      if strike?
-        score + scores_for_bonus.slice(0, 2).sum
-      elsif spare?
-        score + scores_for_bonus.fetch(0)
-      else
-        score
-      end
+      score
     end
   end
 
@@ -43,5 +41,4 @@ class Frame
   def spare?
     @first_shot.score + @second_shot.score == 10
   end
-
 end

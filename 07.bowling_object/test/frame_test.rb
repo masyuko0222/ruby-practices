@@ -47,7 +47,7 @@ class FrameTest < Minitest::Test
   def test_store_bonus_scores_last_frame
     frame = Frame.new(5, 5, 5)
 
-    assert_equal [], frame.store_bonus_scores()
+    assert_equal [], frame.store_bonus_scores
   end
 
   def test_score_case1
