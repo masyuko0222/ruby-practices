@@ -9,13 +9,13 @@ class Frame
     @third_shot = Shot.new(third_mark)
   end
 
-  def calculate_score_with_bonus(frame_number, scores_for_bonus)
+  def calculate_score_with_bonus(frame_number, bonus_scores)
     if frame_number == 9 # last frame
       score
     elsif strike?
-      score + scores_for_bonus.slice(0, 2).sum
+      score + bonus_scores.slice(0, 2).sum
     elsif spare?
-      score + scores_for_bonus.fetch(0)
+      score + bonus_scores.fetch(0)
     else
       score
     end

@@ -31,9 +31,9 @@ class Game
     10.times.sum do |frame_number|
       frame, next_frame, after_next_frame = @frames.slice(frame_number, 3)
 
-      scores_for_bonus = frame.store_bonus_scores(next_frame, after_next_frame)
+      bonus_scores = frame.store_bonus_scores(next_frame, after_next_frame)
 
-      frame.calculate_score_with_bonus(frame_number, scores_for_bonus)
+      frame.calculate_score_with_bonus(frame_number, bonus_scores)
     end
   end
 end
