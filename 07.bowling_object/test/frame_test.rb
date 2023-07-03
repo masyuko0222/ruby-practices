@@ -46,9 +46,9 @@ class FrameTest < Minitest::Test
     assert frame.strike?
   end
 
-  def test_spea?
+  def test_spare?
     frame = Frame.new(6, 4)
 
-    assert frame.spea?
+    assert frame.spare?
   end
 end
