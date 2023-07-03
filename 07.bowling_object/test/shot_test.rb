@@ -24,4 +24,11 @@ class ShotTest < Minitest::Test
 
     assert_equal 5, shot.score
   end
+
+  def test_case4
+    mark = nil
+    shot = Shot.new(mark)
+
+    assert_equal nil, shot.score
+  end
 end

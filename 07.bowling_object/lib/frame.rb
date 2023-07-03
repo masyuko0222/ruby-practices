@@ -15,7 +15,7 @@ class Frame
   end
 
   def store_shot_scores
-    [@first_shot, @second_shot, @third_shot].reject(&:nil?).map(&:score)
+    [@first_shot, @second_shot, @third_shot].map(&:score).compact
   end
 
   def strike?
@@ -23,6 +23,6 @@ class Frame
   end
 
   def spea?
-    @first_shot.score + @second_shot.score + @third_shot.score == 10
+    @first_shot.score + @second_shot.score == 10
   end
 end
