@@ -24,7 +24,7 @@ class Frame
     end
   end
 
-  def store_shot_scores(next_frame = nil, after_next_frame = nil)
+  def store_shot_scores
     [@first_shot, @second_shot, @third_shot].map(&:score).compact
   end
 
