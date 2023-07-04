@@ -9,29 +9,22 @@ class Frame
     @third_shot = Shot.new(third_mark)
   end
 
-  def calculate_score_with_bonus(frame_number, bonus_scores)
+  def score(frame_number, next_frame = nil, after_next_frame = nil)
+    score_in_frame = store_shot_scores.sum
+    bonus_scores = [next_frame, after_next_frame].compact.map(&:store_shot_scores).flatten
+
     if frame_number == 9 # last frame
-      score
+      score_in_frame
     elsif strike?
-      score + bonus_scores.slice(0, 2).sum
+      score_in_frame + bonus_scores.slice(0, 2).sum
     elsif spare?
-      score + bonus_scores.fetch(0)
+      score_in_frame + bonus_scores.fetch(0)
     else
-      score
+      score_in_frame
     end
   end
 
-  # bonus_scores
-  def store_bonus_scores(next_frame = nil, after_next_frame = nil)
-    [next_frame, after_next_frame].compact.map(&:store_shot_scores).flatten
-  end
-
-  def score
-    shot_scores = store_shot_scores
-    shot_scores.sum
-  end
-
-  def store_shot_scores
+  def store_shot_scores(next_frame = nil, after_next_frame = nil)
     [@first_shot, @second_shot, @third_shot].map(&:score).compact
   end
 
