@@ -6,7 +6,6 @@ COLUMN_LENGTH = 3
 
 class FilesForShortFormat
   def initialize(options)
-    @options = options
     @files = Files.new(options).load
   end
 
@@ -24,10 +23,14 @@ class FilesForShortFormat
   def calculate_required_nil_count
     line_length = calculate_line_length
 
-    line_length * COLUMN_LENGTH - @files.size
+    line_length * COLUMN_LENGTH - files_size
   end
 
   def calculate_line_length
-    (@files.size.to_f / COLUMN_LENGTH).ceil
+    (files_size.to_f / COLUMN_LENGTH).ceil
+  end
+
+  def files_size
+    @files.size
   end
 end
