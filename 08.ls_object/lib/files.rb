@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class FilesWithParams
+class Files
   def initialize(params)
     @params = params
   end
