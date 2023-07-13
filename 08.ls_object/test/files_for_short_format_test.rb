@@ -17,7 +17,7 @@ class FilesForShortFormatTest < Minitest::Test
       ['eight', 'one', 'this_is_small_file'],
       ['five', 'passive_link', 'this_is_small_folder'],
       ['four', 'seven', 'three'],
-      ['loooooooooooooooooooooooooooooooooooooooongfolder', 'short.txt', 'two'],
+      ['loooooooooooooooooooooooooooooooooooooooongfolder', 'short.txt', 'two']
     ]
 
     assert_equal expected_files, files.organize

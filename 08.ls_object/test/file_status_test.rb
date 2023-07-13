@@ -19,7 +19,7 @@ class FileStatusTest < Minitest::Test
       time_stamp: 'Jul 12 14:05',
       file_name: 'eight',
       block_size: 0,
-      symlink?: false,
+      symlink?: false
     }
 
     assert_equal expected_information, file_status.load
@@ -40,7 +40,7 @@ class FileStatusTest < Minitest::Test
       time_stamp: 'Jul 12 14:06',
       file_name: 'loooooooooooooooooooooooooooooooooooooooongfolder',
       block_size: 8,
-      symlink?: false,
+      symlink?: false
     }
 
     assert_equal expected_information, file_status.load

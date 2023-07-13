@@ -14,14 +14,14 @@ class FilesFormatterTest < Minitest::Test
       'eight                                               one                                                 this_is_small_file',
       'five                                                passive_link                                        this_is_small_folder',
       'four                                                seven                                               three',
-      'loooooooooooooooooooooooooooooooooooooooongfolder   short.txt                                           two',
+      'loooooooooooooooooooooooooooooooooooooooongfolder   short.txt                                           two'
     ]
 
     assert_equal expected_format, FilesFormatter.new(options).format
   end
 
   def test_long_format_without_options
-    options = { all_files: false, reverse_in_sort: false, long_format: true}
+    options = { all_files: false, reverse_in_sort: false, long_format: true }
 
     table_formatter = FilesFormatter.new(options)
 
@@ -50,6 +50,6 @@ class FilesFormatterTest < Minitest::Test
       '-rw-r--r-- 1 masyuko0222 masyuko0222    0 Jul 12 14:05 two'
     ]
 
-    assert_equal expected_format, FilesFormatter.new(options).format
+    assert_equal expected_format, table_formatter.format
   end
 end

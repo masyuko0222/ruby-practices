@@ -25,7 +25,7 @@ class FilesForShortFormat
   def add_nil_for_transposing(files, line_length)
     nil_count = calculate_required_nil_count(line_length)
 
-    files += Array.new(nil_count)
+    files + Array.new(nil_count)
   end
 
   def calculate_required_nil_count(line_length)
@@ -39,6 +39,6 @@ class FilesForShortFormat
   def columnize_files(files, line_length)
     transposed_files = files.each_slice(line_length).to_a.transpose
 
-    transposed_files.map { |files_in_line| files_in_line.compact }
+    transposed_files.map(&:compact)
   end
 end

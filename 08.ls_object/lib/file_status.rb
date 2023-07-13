@@ -25,9 +25,7 @@ class FileStatus
   def load
     base_status = load_base_status
 
-    if base_status[:symlink?]
-      base_status.store(:link_to, File.readlink(@file_name))
-    end
+    base_status.store(:link_to, File.readlink(@file_name)) if base_status[:symlink?]
 
     base_status
   end
@@ -35,18 +33,18 @@ class FileStatus
   private
 
   def load_base_status
-      {
-        file_type: change_file_type_to_char,
-        file_permission: change_file_permission_to_string,
-        hardlink_count: count_hardlink,
-        user_name: fetch_user_name,
-        group_name: fetch_group_name,
-        file_size: load_file_size,
-        time_stamp: parse_time_stamp,
-        file_name: @file_name,
-        block_size: load_block_size,
-        symlink?: File.symlink?(@file_name)
-      }
+    {
+      file_type: change_file_type_to_char,
+      file_permission: change_file_permission_to_string,
+      hardlink_count: count_hardlink,
+      user_name: fetch_user_name,
+      group_name: fetch_group_name,
+      file_size: load_file_size,
+      time_stamp: parse_time_stamp,
+      file_name: @file_name,
+      block_size: load_block_size,
+      symlink?: File.symlink?(@file_name)
+    }
   end
 
   def change_file_type_to_char

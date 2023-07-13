@@ -21,13 +21,16 @@ class FilesFormatter
 
     formatted_table =
       @organized_files.map do |information|
-        formatted_string = (information[:file_type] + information[:file_permission] + 
-        " #{information[:hardlink_count].to_s}" +
-        " #{information[:user_name]}" +
-        " #{information[:group_name]}" +
-        " #{information[:file_size].to_s.rjust(length_of_max_file_size)}" +
-        " #{information[:time_stamp]}" +
-        " #{information[:file_name]}")
+        formatted_string = [
+          information[:file_type],
+          information[:file_permission].to_s,
+          " #{information[:hardlink_count]}",
+          " #{information[:user_name]}",
+          " #{information[:group_name]}",
+          " #{information[:file_size].to_s.rjust(length_of_max_file_size)}",
+          " #{information[:time_stamp]}",
+          " #{information[:file_name]}"
+        ].join
 
         formatted_string += " -> #{File.readlink(information[:file_name])}" if information[:symlink?]
 
@@ -42,7 +45,7 @@ class FilesFormatter
   end
 
   def calculate_max_file_size_length
-    @organized_files.map{ |information| information[:file_size] }.max.to_s.length
+    @organized_files.map { |information| information[:file_size] }.max.to_s.length
   end
 
   def short_format
@@ -56,6 +59,6 @@ class FilesFormatter
   end
 
   def calculate_max_file_name_length
-    @organized_files.flatten.max_by{ |file| file.length }.length
+    @organized_files.flatten.max_by(&:length).length
   end
 end
