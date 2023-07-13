@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require_relative './table_formatter'
+require_relative './files_formatter'
 require 'optparse'
 
 def load_options
@@ -18,4 +18,4 @@ end
 
 params = load_options
 
-puts TableFormatter.new(params).format
+puts FilesFormatter.new(params).format
