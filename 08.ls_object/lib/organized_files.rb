@@ -5,14 +5,14 @@ require_relative './file_information'
 
 COLUMN_LENGTH = 3
 
-class FilesTable
-  def initialize(params)
-    @params = params
-    @files = Files.new(params).load
+class OrganizedFiles
+  def initialize(options)
+    @options = options
+    @files = Files.new(options).load
   end
 
   def build
-    @params[:long_format] ? build_for_long_format : build_for_short_format
+    @options[:long_format] ? build_for_long_format : build_for_short_format
   end
 
   private

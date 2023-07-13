@@ -1,13 +1,13 @@
 # frozen_string_literal:true
 
 require 'minitest/autorun'
-require_relative '../lib/files_table'
+require_relative '../lib/organized_files'
 
-class FilesTableTest < Minitest::Test
+class OrganizedFilesTest < Minitest::Test
   def test_build_for_short_format_without_options
-    params = { all_files: false, reverse_in_sort: false }
+    options = { all_files: false, reverse_in_sort: false }
 
-    files_table = FilesTable.new(params)
+    files_table = OrganizedFiles.new(options)
 
     expected_table = [
       ['THIS_IS_BIG_FILE', 'loooooooooooooooooooooooooooooooooooooooongtext.txt', 'shortfolder'],
