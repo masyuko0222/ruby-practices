@@ -1,13 +1,13 @@
 # frozen_string_literal:true
 
 require 'minitest/autorun'
-require_relative '../lib/file_information'
+require_relative '../lib/file_status'
 
-class FileInformationtest < Minitest::Test
+class FileStatusTest < Minitest::Test
   def test_load_case_normal_file
     file_name = 'eight'
 
-    file_information = FileInformation.new(file_name)
+    file_status = FileStatus.new(file_name)
 
     expected_information = {
       file_type: '-',
@@ -22,13 +22,13 @@ class FileInformationtest < Minitest::Test
       symlink?: false,
     }
 
-    assert_equal expected_information, file_information.load
+    assert_equal expected_information, file_status.load
   end
 
   def test_load_case_directory
     file_name = 'loooooooooooooooooooooooooooooooooooooooongfolder'
 
-    file_information = FileInformation.new(file_name)
+    file_status = FileStatus.new(file_name)
 
     expected_information = {
       file_type: 'd',
@@ -43,13 +43,13 @@ class FileInformationtest < Minitest::Test
       symlink?: false,
     }
 
-    assert_equal expected_information, file_information.load
+    assert_equal expected_information, file_status.load
   end
 
   def test_load_case_soft_link
     file_name = 'aggressive_link'
 
-    file_information = FileInformation.new(file_name)
+    file_status = FileStatus.new(file_name)
 
     expected_information = {
       file_type: 'l',
@@ -65,6 +65,6 @@ class FileInformationtest < Minitest::Test
       link_to: 'passive_link'
     }
 
-    assert_equal expected_information, file_information.load
+    assert_equal expected_information, file_status.load
   end
 end

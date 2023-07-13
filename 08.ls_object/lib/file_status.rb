@@ -3,7 +3,7 @@
 FILE_TYPE_TO_CHAR = {
   'directory' => 'd',
   'file' => '-',
-  'link' => 'l',
+  'link' => 'l'
 }.freeze
 
 FILE_PERMISSION_TO_CHAR = {
@@ -17,26 +17,24 @@ FILE_PERMISSION_TO_CHAR = {
   '7' => 'rwx'
 }.freeze
 
-class FileInformation
+class FileStatus
   def initialize(file_name)
     @file_name = file_name
   end
 
   def load
-    base_information = load_base_information
+    base_status = load_base_status
 
-    base_information.store(:link_to, File.readlink(@file_name)) if base_information[:symlink?]
+    if base_status[:symlink?]
+      base_status.store(:link_to, File.readlink(@file_name))
+    end
 
-    base_information
-  end
-
-  def calculate_max_file_name_length(files)
-
+    base_status
   end
 
   private
 
-  def load_base_information
+  def load_base_status
       {
         file_type: change_file_type_to_char,
         file_permission: change_file_permission_to_string,
@@ -46,13 +44,9 @@ class FileInformation
         file_size: load_file_size,
         time_stamp: parse_time_stamp,
         file_name: @file_name,
-        block_size: file_link_and_status.blocks,
-        symlink?: symlink?(@file_name)
+        block_size: load_block_size,
+        symlink?: File.symlink?(@file_name)
       }
-  end
-
-  def file_link_and_status
-    File.lstat(@file_name)
   end
 
   def change_file_type_to_char
@@ -85,7 +79,11 @@ class FileInformation
     file_link_and_status.mtime.strftime('%b %e %H:%M')
   end
 
-  def symlink?(file_name)
-    File.symlink?(file_name)
+  def load_block_size
+    file_link_and_status.blocks
+  end
+
+  def file_link_and_status
+    File.lstat(@file_name)
   end
 end
