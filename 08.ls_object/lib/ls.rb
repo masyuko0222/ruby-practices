@@ -16,6 +16,6 @@ def load_options
   options
 end
 
-params = load_options
+options = load_options
 
-puts FilesFormatter.new(params).format
+puts FilesFormatter.new(options).format
