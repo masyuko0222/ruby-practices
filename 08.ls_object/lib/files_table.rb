@@ -1,51 +1,42 @@
 # frozen_string_literal: true
 
 require_relative './files'
-require 'debug'
+require_relative './file_information'
 
 COLUMN_LENGTH = 3
 
-FILE_TYPE_TO_CHAR = {
-  'directory' => 'd',
-  'file' => '-',
-  'link' => 'l',
-}.freeze
-
-FILE_PERMISSION_TO_CHAR = {
-  '0' => '---',
-  '1' => '--x',
-  '2' => '-w-',
-  '3' => '-wx',
-  '4' => 'r--',
-  '5' => 'r-x',
-  '6' => 'rw-',
-  '7' => 'rwx'
-}.freeze
-
-class FileTable
+class FilesTable
   def initialize(params)
     @params = params
     @files = Files.new(params).load
   end
 
   def build
-    table =
-      @params[:long_format] ? build_for_long_format : build_for_short_format
-
-      @params[:reverse_in_sort] ? table.reverse : table
+    @params[:long_format] ? build_for_long_format : build_for_short_format
   end
 
   private
 
   def build_for_short_format
-    line_length = (@files.size.to_f / COLUMN_LENGTH).ceil
-    adding_nil_count = line_length * COLUMN_LENGTH - @files.size
+    line_length = calculate_line_length
+    adding_nil_count = count_nil_for_adding
 
     @files += Array.new(adding_nil_count)
 
     @files.each_slice(line_length).to_a.transpose
   end
 
-  private
+  def count_nil_for_adding
+    line_length = calculate_line_length
 
+    line_length * COLUMN_LENGTH - @files.size
+  end
+
+  def calculate_line_length
+    (@files.size.to_f / COLUMN_LENGTH).ceil
+  end
+
+  def build_for_long_format
+    @files.map { |file| FileInformation.new(file).load }
+  end
 end
