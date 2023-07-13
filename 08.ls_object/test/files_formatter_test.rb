@@ -1,12 +1,11 @@
 # frozen_string_literal:true
 
 require 'minitest/autorun'
-require_relative '../lib/table_formatter'
+require_relative '../lib/files_formatter'
 
-class TableFormatterTest < Minitest::Test
-  def test_short_format_without_options
+class FilesFormatterTest < Minitest::Test
+  def test_short_format
     options = { all_files: false, reverse_in_sort: false, long_format: false }
-    table_formatter = TableFormatter.new(options)
 
     expected_format = [
       'THIS_IS_BIG_FILE                                    loooooooooooooooooooooooooooooooooooooooongtext.txt shortfolder',
@@ -18,13 +17,13 @@ class TableFormatterTest < Minitest::Test
       'loooooooooooooooooooooooooooooooooooooooongfolder   short.txt                                           two',
     ]
 
-    assert_equal expected_format, table_formatter.format
+    assert_equal expected_format, FilesFormatter.new(options).format
   end
 
-  def test_long_format_without_all_and_reverse
+  def test_long_format_without_options
     options = { all_files: false, reverse_in_sort: false, long_format: true}
 
-    table_formatter = TableFormatter.new(options)
+    table_formatter = FilesFormatter.new(options)
 
     expected_format = [
       'total 20',
@@ -51,6 +50,6 @@ class TableFormatterTest < Minitest::Test
       '-rw-r--r-- 1 masyuko0222 masyuko0222    0 Jul 12 14:05 two'
     ]
 
-    assert_equal expected_format, table_formatter.format
+    assert_equal expected_format, FilesFormatter.new(options).format
   end
 end
