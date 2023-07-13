@@ -4,14 +4,14 @@ require_relative './files'
 require_relative './files_table'
 
 class TableFormatter
-  def initialize(params)
-    @params = params
-    @files = Files.new(params).load
-    @files_table = FilesTable.new(params).build
+  def initialize(options)
+    @options = options
+    @files = Files.new(options).load
+    @files_table = FilesTable.new(options).build
   end
 
   def format
-    @params[:long_format] ? long_format : short_format
+    @options[:long_format] ? long_format : short_format
   end
 
   private

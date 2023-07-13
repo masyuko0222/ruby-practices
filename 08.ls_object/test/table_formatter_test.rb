@@ -5,8 +5,8 @@ require_relative '../lib/table_formatter'
 
 class TableFormatterTest < Minitest::Test
   def test_short_format_without_options
-    params = { all_files: false, reverse_in_sort: false, long_format: false }
-    table_formatter = TableFormatter.new(params)
+    options = { all_files: false, reverse_in_sort: false, long_format: false }
+    table_formatter = TableFormatter.new(options)
 
     expected_format = [
       'THIS_IS_BIG_FILE                                    loooooooooooooooooooooooooooooooooooooooongtext.txt shortfolder',
@@ -22,9 +22,9 @@ class TableFormatterTest < Minitest::Test
   end
 
   def test_long_format_without_all_and_reverse
-    params = { all_files: false, reverse_in_sort: false, long_format: true}
+    options = { all_files: false, reverse_in_sort: false, long_format: true}
 
-    table_formatter = TableFormatter.new(params)
+    table_formatter = TableFormatter.new(options)
 
     expected_format = [
       'total 20',
