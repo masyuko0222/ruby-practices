@@ -30,6 +30,10 @@ class FileInformation
     base_information
   end
 
+  def calculate_max_file_name_length(files)
+
+  end
+
   private
 
   def load_base_information
@@ -42,6 +46,7 @@ class FileInformation
         file_size: load_file_size,
         time_stamp: parse_time_stamp,
         file_name: @file_name,
+        block_size: file_link_and_status.blocks,
         symlink?: symlink?(@file_name)
       }
   end

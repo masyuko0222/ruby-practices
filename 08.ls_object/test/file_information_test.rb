@@ -18,6 +18,7 @@ class FileInformationtest < Minitest::Test
       file_size: 0,
       time_stamp: 'Jul 12 14:05',
       file_name: 'eight',
+      block_size: 0,
       symlink?: false,
     }
 
@@ -38,6 +39,7 @@ class FileInformationtest < Minitest::Test
       file_size: 4096,
       time_stamp: 'Jul 12 14:06',
       file_name: 'loooooooooooooooooooooooooooooooooooooooongfolder',
+      block_size: 8,
       symlink?: false,
     }
 
@@ -58,6 +60,7 @@ class FileInformationtest < Minitest::Test
       file_size: 12,
       time_stamp: 'Jul 12 14:07',
       file_name: 'aggressive_link',
+      block_size: 0,
       symlink?: true,
       link_to: 'passive_link'
     }
