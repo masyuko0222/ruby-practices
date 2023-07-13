@@ -12,7 +12,7 @@ class FilesForShortFormat
 
   def organize
     line_length = calculate_line_length
-    adding_nil_count = count_nil_for_adding
+    adding_nil_count = calculate_required_nil_count
 
     @files += Array.new(adding_nil_count)
 
@@ -21,7 +21,7 @@ class FilesForShortFormat
 
   private
 
-  def count_nil_for_adding
+  def calculate_required_nil_count
     line_length = calculate_line_length
 
     line_length * COLUMN_LENGTH - @files.size
