@@ -8,7 +8,7 @@ class FilesForShortFormatTest < Minitest::Test
     test_organize_without_options
     options = { all_files: false, reverse_in_sort: false long_format: false }
 
-    organized_files = FilesForShortFormat.new(options)
+    files = FilesForShortFormat.new(options)
 
     expected_files = [
       ['THIS_IS_BIG_FILE', 'loooooooooooooooooooooooooooooooooooooooongtext.txt', 'shortfolder'],
