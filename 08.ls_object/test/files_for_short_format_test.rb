@@ -11,13 +11,13 @@ class FilesForShortFormatTest < Minitest::Test
     files = FilesForShortFormat.new(options)
 
     expected_files = [
-      ['THIS_IS_BIG_FILE', 'loooooooooooooooooooooooooooooooooooooooongtext.txt', 'shortfolder'],
-      ['THIS_IS_BIG_FOLDER', 'nine', 'six'],
       ['aggressive_link', 'old.rb', 'ten'],
-      ['eight', 'one', 'this_is_small_file'],
-      ['five', 'passive_link', 'this_is_small_folder'],
-      ['four', 'seven', 'three'],
-      ['loooooooooooooooooooooooooooooooooooooooongfolder', 'short.txt', 'two']
+      ['eight', 'one', 'THIS_IS_BIG_FILE'],
+      ['five', 'passive_link', 'THIS_IS_BIG_FOLDER'],
+      ['four', 'seven', 'this_is_small_file'],
+      ['loooooooooooooooooooooooooooooooooooooooongfolder', 'short.txt', 'this_is_small_folder'],
+      ['loooooooooooooooooooooooooooooooooooooooongtext.txt', 'shortfolder', 'three'],
+      ['nine', 'six', 'two']
     ]
 
     assert_equal expected_files, files.organize

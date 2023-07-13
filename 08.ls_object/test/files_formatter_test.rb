@@ -8,13 +8,13 @@ class FilesFormatterTest < Minitest::Test
     options = { all_files: false, reverse_in_sort: false, long_format: false }
 
     expected_format = [
-      'THIS_IS_BIG_FILE                                    loooooooooooooooooooooooooooooooooooooooongtext.txt shortfolder',
-      'THIS_IS_BIG_FOLDER                                  nine                                                six',
       'aggressive_link                                     old.rb                                              ten',
-      'eight                                               one                                                 this_is_small_file',
-      'five                                                passive_link                                        this_is_small_folder',
-      'four                                                seven                                               three',
-      'loooooooooooooooooooooooooooooooooooooooongfolder   short.txt                                           two'
+      'eight                                               one                                                 THIS_IS_BIG_FILE',
+      'five                                                passive_link                                        THIS_IS_BIG_FOLDER',
+      'four                                                seven                                               this_is_small_file',
+      'loooooooooooooooooooooooooooooooooooooooongfolder   short.txt                                           this_is_small_folder',
+      'loooooooooooooooooooooooooooooooooooooooongtext.txt shortfolder                                         three',
+      'nine                                                six                                                 two'
     ]
 
     assert_equal expected_format, FilesFormatter.new(options).format
@@ -27,8 +27,6 @@ class FilesFormatterTest < Minitest::Test
 
     expected_format = [
       'total 20',
-      '-rw-r--r-- 1 masyuko0222 masyuko0222    0 Jul 12 14:05 THIS_IS_BIG_FILE',
-      'drwxr-xr-x 2 masyuko0222 masyuko0222 4096 Jul 12 14:06 THIS_IS_BIG_FOLDER',
       'lrwxrwxrwx 1 masyuko0222 masyuko0222   12 Jul 12 14:07 aggressive_link -> passive_link',
       '-rw-r--r-- 1 masyuko0222 masyuko0222    0 Jul 12 14:05 eight',
       '-rw-r--r-- 1 masyuko0222 masyuko0222    0 Jul 12 14:05 five',
@@ -44,6 +42,8 @@ class FilesFormatterTest < Minitest::Test
       'drwxr-xr-x 2 masyuko0222 masyuko0222 4096 Jul 12 14:06 shortfolder',
       '-rw-r--r-- 1 masyuko0222 masyuko0222    0 Jul 12 14:05 six',
       '-rw-r--r-- 1 masyuko0222 masyuko0222    0 Jul 12 14:05 ten',
+      '-rw-r--r-- 1 masyuko0222 masyuko0222    0 Jul 12 14:05 THIS_IS_BIG_FILE',
+      'drwxr-xr-x 2 masyuko0222 masyuko0222 4096 Jul 12 14:06 THIS_IS_BIG_FOLDER',
       '-rw-r--r-- 1 masyuko0222 masyuko0222    0 Jul 12 14:05 this_is_small_file',
       'drwxr-xr-x 2 masyuko0222 masyuko0222 4096 Jul 12 14:06 this_is_small_folder',
       '-rw-r--r-- 1 masyuko0222 masyuko0222    0 Jul 12 14:05 three',

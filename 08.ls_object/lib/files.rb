@@ -6,7 +6,7 @@ class Files
   end
 
   def load
-    all_files = Dir.entries('.').sort
+    all_files = Dir.entries('.').sort_by(&:downcase)
 
     filtered_files = @options[:all_files] ? all_files : all_files.grep_v(/^\./)
 
