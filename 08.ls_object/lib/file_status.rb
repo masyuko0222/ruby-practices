@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'etc'
+
 FILE_TYPE_TO_CHAR = {
   'directory' => 'd',
   'file' => '-',
