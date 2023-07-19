@@ -20,19 +20,19 @@ class FilesFormatter
     length_of_max_file_size = calculate_max_file_size_length
 
     formatted_table =
-      @organized_files.map do |information|
+      @organized_files.map do |file|
         formatted_string = [
-          information[:file_type],
-          information[:file_permission].to_s,
-          " #{information[:hardlink_count]}",
-          " #{information[:user_name]}",
-          " #{information[:group_name]}",
-          " #{information[:file_size].to_s.rjust(length_of_max_file_size)}",
-          " #{information[:time_stamp]}",
-          " #{information[:file_name]}"
+          file[:file_type],
+          file[:file_permission].to_s,
+          " #{file[:hardlink_count]}",
+          " #{file[:user_name]}",
+          " #{file[:group_name]}",
+          " #{file[:file_size].to_s.rjust(length_of_max_file_size)}",
+          " #{file[:time_stamp]}",
+          " #{file[:file_name]}"
         ].join
 
-        formatted_string += " -> #{File.readlink(information[:file_name])}" if information[:symlink?]
+        formatted_string += " -> #{File.readlink(file[:file_name])}" if file[:symlink?]
 
         formatted_string
       end
@@ -41,11 +41,11 @@ class FilesFormatter
   end
 
   def calculate_total_block
-    @organized_files.sum { |information| information[:block_size] / 2 }
+    @organized_files.sum { |file| file[:block_size] / 2 }
   end
 
   def calculate_max_file_size_length
-    @organized_files.map { |information| information[:file_size] }.max.to_s.length
+    @organized_files.map { |file| file[:file_size] }.max.to_s.length
   end
 
   def short_format
