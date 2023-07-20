@@ -1,13 +1,13 @@
 # frozen_string_literal:true
 
 require 'minitest/autorun'
-require_relative '../lib/file_status'
+require_relative '../lib/file_state'
 
-class FileStatusTest < Minitest::Test
+class FileStateTest < Minitest::Test
   def test_load_for_long_format_case_normal_file
-    file_status = FileStatus.new('eight')
+    file_state = FileState.new('eight')
 
-    expected_status = {
+    expected_state = {
       file_type: '-',
       file_permission: 'rw-r--r--',
       hardlink_count: 1,
@@ -20,13 +20,13 @@ class FileStatusTest < Minitest::Test
       symlink?: false
     }
 
-    assert_equal expected_status, file_status.load_for_long_format
+    assert_equal expected_state, file_state.load_for_long_format
   end
 
   def test_load_for_long_format_case_directory
-    file_status = FileStatus.new('loooooooooooooooooooooooooooooooooooooooongfolder')
+    file_state = FileState.new('loooooooooooooooooooooooooooooooooooooooongfolder')
 
-    expected_status = {
+    expected_state = {
       file_type: 'd',
       file_permission: 'rwxr-xr-x',
       hardlink_count: 2,
@@ -39,13 +39,13 @@ class FileStatusTest < Minitest::Test
       symlink?: false
     }
 
-    assert_equal expected_status, file_status.load_for_long_format
+    assert_equal expected_state, file_state.load_for_long_format
   end
 
   def test_load_for_long_format_case_soft_link
-    file_status = FileStatus.new('aggressive_link')
+    file_state = FileState.new('aggressive_link')
 
-    expected_status = {
+    expected_state = {
       file_type: 'l',
       file_permission: 'rwxrwxrwx',
       hardlink_count: 1,
@@ -59,17 +59,17 @@ class FileStatusTest < Minitest::Test
       link_to: 'passive_link'
     }
 
-    assert_equal expected_status, file_status.load_for_long_format
+    assert_equal expected_state, file_state.load_for_long_format
   end
 
   def test_for_short_format_case_normal_file
-    file_status = FileStatus.new('eight')
+    file_state = FileState.new('eight')
 
-    expected_status = {
+    expected_state = {
       file_name: 'eight',
       name_size: 5
     }
 
-    assert_equal expected_status, file_status.load_for_short_format
+    assert_equal expected_state, file_state.load_for_short_format
   end
 end
