@@ -9,7 +9,7 @@ class DirectoryTest < Minitest::Test
 
     expected_files = Dir.entries('../fixtures').sort_by(&:downcase)
 
-    assert_equal(expected_files, files.load_files)
+    assert_equal(expected_files, files.load_file_names)
   end
 
   def test_load_files_reverse_option
@@ -17,7 +17,7 @@ class DirectoryTest < Minitest::Test
 
     expected_files = Dir.entries('../fixtures').sort_by(&:downcase).grep_v(/^\./).reverse
 
-    assert_equal(expected_files, files.load_files)
+    assert_equal(expected_files, files.load_file_names)
   end
 
   def test_load_files_with_all_files_and_reverse_options
@@ -25,6 +25,6 @@ class DirectoryTest < Minitest::Test
 
     expected_files = Dir.entries('../fixtures').sort_by(&:downcase).reverse
 
-    assert_equal(expected_files, files.load_files)
+    assert_equal(expected_files, files.load_file_names)
   end
 end

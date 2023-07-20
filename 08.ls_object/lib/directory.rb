@@ -6,7 +6,7 @@ class Directory
     @reverse_in_sort = reverse_in_sort
   end
 
-  def load_files
+  def load_file_names
     all_files = Dir.entries('.').sort_by(&:downcase)
 
     filtered_files = @all_files ? all_files : all_files.grep_v(/^\./)
