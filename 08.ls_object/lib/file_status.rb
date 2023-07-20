@@ -24,18 +24,8 @@ class FileStatus
     @file_name = file_name
   end
 
-  def load
-    base_status = load_base_status
-
-    base_status.store(:link_to, File.readlink(@file_name)) if base_status[:symlink?]
-
-    base_status
-  end
-
-  private
-
-  def load_base_status
-    {
+  def load_for_long_format
+    base_status = {
       file_type: change_file_type_to_char,
       file_permission: change_file_permission_to_string,
       hardlink_count: count_hardlink,
@@ -47,43 +37,49 @@ class FileStatus
       block_size: load_block_size,
       symlink?: File.symlink?(@file_name)
     }
+
+    base_status.store(:link_to, File.readlink(@file_name)) if base_status[:symlink?]
+
+    base_status
   end
 
+  private
+
   def change_file_type_to_char
-    FILE_TYPE_TO_CHAR[file_link_and_status.ftype]
+    FILE_TYPE_TO_CHAR[fetch_file_lstat.ftype]
   end
 
   def change_file_permission_to_string
-    file_octal_mode = file_link_and_status.mode.to_s(8)
+    file_octal_mode = fetch_file_lstat.mode.to_s(8)
 
     (-3..-1).map { |i| FILE_PERMISSION_TO_CHAR[file_octal_mode[i]] }.join
   end
 
   def count_hardlink
-    file_link_and_status.nlink
+    fetch_file_lstat.nlink
   end
 
   def fetch_user_name
-    Etc.getpwuid(file_link_and_status.uid).name
+    Etc.getpwuid(fetch_file_lstat.uid).name
   end
 
   def fetch_group_name
-    Etc.getpwuid(file_link_and_status.gid).name
+    Etc.getpwuid(fetch_file_lstat.gid).name
   end
 
   def load_file_size
-    file_link_and_status.size
+    fetch_file_lstat.size
   end
 
   def parse_time_stamp
-    file_link_and_status.mtime.strftime('%b %e %H:%M')
+    fetch_file_lstat.mtime.strftime('%b %e %H:%M')
   end
 
   def load_block_size
-    file_link_and_status.blocks
+    fetch_file_lstat.blocks
   end
 
-  def file_link_and_status
+  def fetch_file_lstat
     File.lstat(@file_name)
   end
 end

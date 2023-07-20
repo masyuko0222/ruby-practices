@@ -4,12 +4,10 @@ require 'minitest/autorun'
 require_relative '../lib/file_status'
 
 class FileStatusTest < Minitest::Test
-  def test_load_case_normal_file
-    file_name = 'eight'
+  def test_load_for_long_format_case_normal_file
+    file_status = FileStatus.new('eight')
 
-    file_status = FileStatus.new(file_name)
-
-    expected_information = {
+    expected_status = {
       file_type: '-',
       file_permission: 'rw-r--r--',
       hardlink_count: 1,
@@ -22,15 +20,13 @@ class FileStatusTest < Minitest::Test
       symlink?: false
     }
 
-    assert_equal expected_information, file_status.load
+    assert_equal expected_status, file_status.load_for_long_format
   end
 
-  def test_load_case_directory
-    file_name = 'loooooooooooooooooooooooooooooooooooooooongfolder'
+  def test_load_for_long_format_case_directory
+    file_status = FileStatus.new('loooooooooooooooooooooooooooooooooooooooongfolder')
 
-    file_status = FileStatus.new(file_name)
-
-    expected_information = {
+    expected_status = {
       file_type: 'd',
       file_permission: 'rwxr-xr-x',
       hardlink_count: 2,
@@ -43,15 +39,13 @@ class FileStatusTest < Minitest::Test
       symlink?: false
     }
 
-    assert_equal expected_information, file_status.load
+    assert_equal expected_status, file_status.load_for_long_format
   end
 
-  def test_load_case_soft_link
-    file_name = 'aggressive_link'
+  def test_load_for_long_format_case_soft_link
+    file_status = FileStatus.new('aggressive_link')
 
-    file_status = FileStatus.new(file_name)
-
-    expected_information = {
+    expected_status = {
       file_type: 'l',
       file_permission: 'rwxrwxrwx',
       hardlink_count: 1,
@@ -65,6 +59,6 @@ class FileStatusTest < Minitest::Test
       link_to: 'passive_link'
     }
 
-    assert_equal expected_information, file_status.load
+    assert_equal expected_status, file_status.load_for_long_format
   end
 end

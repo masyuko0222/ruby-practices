@@ -6,9 +6,8 @@ require_relative '../lib/files_for_short_format'
 class FilesForShortFormatTest < Minitest::Test
   def
     test_organize_without_options
-    options = { all_files: false, reverse_in_sort: false, long_format: false }
-
-    files = FilesForShortFormat.new(options)
+    files = Files.new(all_files: false, reverse_in_sort: false)
+    shortformat = FilesForShortFormat.new(files)
 
     expected_files = [
       ['aggressive_link', 'old.rb', 'ten'],
@@ -20,6 +19,6 @@ class FilesForShortFormatTest < Minitest::Test
       ['nine', 'six', 'two']
     ]
 
-    assert_equal expected_files, files.organize
+    assert_equal expected_files, shortformat.organize
   end
 end

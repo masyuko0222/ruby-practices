@@ -5,8 +5,8 @@ require_relative './files'
 COLUMN_LENGTH = 3
 
 class FilesForShortFormat
-  def initialize(options)
-    @files = Files.new(options).load
+  def initialize(files)
+    @files = files
   end
 
   def organize
