@@ -4,29 +4,26 @@ require 'minitest/autorun'
 require_relative '../lib/files'
 
 class FilesTest < Minitest::Test
-  def test_load_with_only_all_option
-    options = { all_files: true, reverse_in_sort: false }
-    files = Files.new(options)
+  def test_load_all_files_option
+    files = Files.new(all_files: true)
 
-    expected_files = Dir.entries('../fixtures').sort
-
-    assert_equal(expected_files, files.load)
-  end
-
-  def test_load_with_only_reverse_option
-    options = { all_files: false, reverse_in_sort: true }
-    files = Files.new(options)
-
-    expected_files = Dir.entries('../fixtures').sort.grep_v(/^\./).reverse
+    expected_files = Dir.entries('../fixtures').sort_by(&:downcase)
 
     assert_equal(expected_files, files.load)
   end
 
-  def test_load_with_all_and_reverse_option
-    options = { all_files: true, reverse_in_sort: true }
-    files = Files.new(options)
+  def test_load_reverse_option
+    files = Files.new(reverse_in_sort: true)
 
-    expected_files = Dir.entries('../fixtures').sort.reverse
+    expected_files = Dir.entries('../fixtures').sort_by(&:downcase).grep_v(/^\./).reverse
+
+    assert_equal(expected_files, files.load)
+  end
+
+  def test_load_with_all_files_and_reverse_options
+    files = Files.new(all_files: true, reverse_in_sort: true)
+
+    expected_files = Dir.entries('../fixtures').sort_by(&:downcase).reverse
 
     assert_equal(expected_files, files.load)
   end
