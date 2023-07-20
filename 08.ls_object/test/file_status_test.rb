@@ -61,4 +61,15 @@ class FileStatusTest < Minitest::Test
 
     assert_equal expected_status, file_status.load_for_long_format
   end
+
+  def test_for_short_format_case_normal_file
+    file_status = FileStatus.new('eight')
+
+    expected_status = {
+      file_name: 'eight',
+      name_size: 5
+    }
+
+    assert_equal expected_status, file_status.load_for_short_format
+  end
 end

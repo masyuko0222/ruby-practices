@@ -24,6 +24,13 @@ class FileStatus
     @file_name = file_name
   end
 
+  def load_for_short_format
+    {
+      file_name: @file_name,
+      name_size: @file_name.size
+    }
+  end
+
   def load_for_long_format
     base_status = {
       file_type: change_file_type_to_char,
