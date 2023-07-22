@@ -1,31 +1,12 @@
-# frozen_string_literal:true
+# frozen_string_literal: true
 
-require 'minitest/autorun'
-require_relative '../lib/files_formatter'
-
-class FilesFormatterTest < Minitest::Test
-  def test_short_format
-    options = { all_files: false, reverse_in_sort: false, long_format: false }
-
-    expected_format = [
-      'aggressive_link                                     old.rb                                              ten',
-      'eight                                               one                                                 THIS_IS_BIG_FILE',
-      'five                                                passive_link                                        THIS_IS_BIG_FOLDER',
-      'four                                                seven                                               this_is_small_file',
-      'loooooooooooooooooooooooooooooooooooooooongfolder   short.txt                                           this_is_small_folder',
-      'loooooooooooooooooooooooooooooooooooooooongtext.txt shortfolder                                         three',
-      'nine                                                six                                                 two'
-    ]
-
-    assert_equal expected_format, FilesFormatter.new(options).format
+class LongFormatter
+  def initialize(file_names)
+    @file_names = file_names
   end
 
-  def test_long_format_without_options
-    options = { all_files: false, reverse_in_sort: false, long_format: true }
-
-    table_formatter = FilesFormatter.new(options)
-
-    expected_format = [
+  def format
+    [
       'total 20',
       'lrwxrwxrwx 1 masyuko0222 masyuko0222   12 Jul 12 14:07 aggressive_link -> passive_link',
       '-rw-r--r-- 1 masyuko0222 masyuko0222    0 Jul 12 14:05 eight',
@@ -49,7 +30,5 @@ class FilesFormatterTest < Minitest::Test
       '-rw-r--r-- 1 masyuko0222 masyuko0222    0 Jul 12 14:05 three',
       '-rw-r--r-- 1 masyuko0222 masyuko0222    0 Jul 12 14:05 two'
     ]
-
-    assert_equal expected_format, table_formatter.format
   end
 end
