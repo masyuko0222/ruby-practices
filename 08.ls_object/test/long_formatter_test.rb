@@ -3,12 +3,13 @@
 require 'minitest/autorun'
 require_relative '../lib/long_formatter'
 require_relative '../lib/directory'
+require_relative '../lib/file_state'
 
 class LongFormatterTest < Minitest::Test
   def test_format_no_args
-    directory = Directory.new()
-    file_names = directory.load_file_names
-    long_formatter = LongFormatter.new(file_names)
+    file_names = Directory.new().load_file_names
+    states_of_files = file_names.map { |file_name| FileState.new(file_name).load_for_long_format }
+    long_formatter = LongFormatter.new(file_names, states_of_files)
 
     expected_format = [
       'total 20',
