@@ -25,16 +25,18 @@ class FileState
   end
 
   def load_for_long_format
+    file_lstat = fetch_file_lstat
+
     base_status = {
-      file_type: change_file_type_to_char,
+      file_type: FILE_TYPE_TO_CHAR[file_lstat.ftype],
       file_permission: change_file_permission_to_string,
-      hardlink_count: count_hardlink,
-      user_name: fetch_user_name,
-      group_name: fetch_group_name,
-      file_size: load_file_size,
+      hardlink_count: file_lstat.nlink,
+      user_name: Etc.getpwuid(fetch_file_lstat.uid).name,
+      group_name: Etc.getpwuid(fetch_file_lstat.gid).name,
+      file_size: file_lstat.size,
       time_stamp: parse_time_stamp,
       file_name: @file_name,
-      block_size: load_block_size,
+      block_size: file_lstat.blocks,
       symlink?: File.symlink?(@file_name)
     }
 
@@ -45,8 +47,8 @@ class FileState
 
   private
 
-  def change_file_type_to_char
-    FILE_TYPE_TO_CHAR[fetch_file_lstat.ftype]
+  def fetch_file_lstat
+    File.lstat(@file_name)
   end
 
   def change_file_permission_to_string
@@ -55,31 +57,7 @@ class FileState
     (-3..-1).map { |i| FILE_PERMISSION_TO_CHAR[file_octal_mode[i]] }.join
   end
 
-  def count_hardlink
-    fetch_file_lstat.nlink
-  end
-
-  def fetch_user_name
-    Etc.getpwuid(fetch_file_lstat.uid).name
-  end
-
-  def fetch_group_name
-    Etc.getpwuid(fetch_file_lstat.gid).name
-  end
-
-  def load_file_size
-    fetch_file_lstat.size
-  end
-
   def parse_time_stamp
     fetch_file_lstat.mtime.strftime('%b %e %H:%M')
-  end
-
-  def load_block_size
-    fetch_file_lstat.blocks
-  end
-
-  def fetch_file_lstat
-    File.lstat(@file_name)
   end
 end
