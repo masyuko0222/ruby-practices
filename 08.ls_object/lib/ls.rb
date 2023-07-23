@@ -1,21 +1,34 @@
 # frozen_string_literal: true
 
-require_relative './files_formatter'
+require 'debug'
 require 'optparse'
+require_relative './directory'
+require_relative './long_formatter'
+require_relative './short_formatter'
 
-def load_options
-  opt = OptionParser.new
+def main
+  args = load_args
 
-  options = { all_files: false, reverse_in_sort: false, long_format: false }
+  file_names = Directory.new(**args).load_file_names
 
-  opt.on('-a', 'do not ignore entries starting with .') { |v| options[:all_files] = v }
-  opt.on('-r', 'reverse order while sorting') { |v| options[:reverse_in_sort] = v }
-  opt.on('-l', 'use a long listing format') { |v| options[:long_format] = v }
-  opt.parse!(ARGV)
+  formatted_file_names =
+    args[:long_format] ? LongFormatter.new(file_names).format : ShortFormatter.new(file_names).format
 
-  options
+  puts formatted_file_names
 end
 
-options = load_options
+def load_args
+  opt = OptionParser.new
 
-puts FilesFormatter.new(options).format
+  args = { all_files: false, reverse_in_sort: false, long_format: false }
+
+  opt.on('-a', 'do not ignore entries starting with .') { |v| args[:all_files] = v }
+  opt.on('-r', 'reverse order while sorting') { |v| args[:reverse_in_sort] = v }
+  opt.on('-l', 'use a long listing format') { |v| args[:long_format] = v }
+  opt.parse!(ARGV)
+
+  args
+end
+
+main
+
