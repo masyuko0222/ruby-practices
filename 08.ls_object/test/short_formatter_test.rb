@@ -6,7 +6,7 @@ require_relative '../lib/directory'
 
 class ShortFormatterTest < Minitest::Test
   def test_format_no_args
-    directory = Directory.new()
+    directory = Directory.new
     file_names = directory.load_file_names
     short_formatter = ShortFormatter.new(file_names)
 
@@ -28,15 +28,15 @@ class ShortFormatterTest < Minitest::Test
     file_names = directory.load_file_names
     short_formatter = ShortFormatter.new(file_names)
 
-  expected_format = [
-    'two                                                 six                                                 nine',
-    'three                                               shortfolder                                         loooooooooooooooooooooooooooooooooooooooongtext.txt',
-    'this_is_small_folder                                short.txt                                           loooooooooooooooooooooooooooooooooooooooongfolder',
-    'this_is_small_file                                  seven                                               four',
-    'THIS_IS_BIG_FOLDER                                  passive_link                                        five',
-    'THIS_IS_BIG_FILE                                    one                                                 eight',
-    'ten                                                 old.rb                                              aggressive_link'
-  ]
+    expected_format = [
+      'two                                                 six                                                 nine',
+      'three                                               shortfolder                                         loooooooooooooooooooooooooooooooooooooooongtext.txt',
+      'this_is_small_folder                                short.txt                                           loooooooooooooooooooooooooooooooooooooooongfolder',
+      'this_is_small_file                                  seven                                               four',
+      'THIS_IS_BIG_FOLDER                                  passive_link                                        five',
+      'THIS_IS_BIG_FILE                                    one                                                 eight',
+      'ten                                                 old.rb                                              aggressive_link'
+    ]
 
     assert_equal expected_format, short_formatter.format
   end

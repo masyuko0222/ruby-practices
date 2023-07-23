@@ -26,13 +26,10 @@ class ShortFormatter
 
     file_names_filled_blanks = file_names + Array.new(line_length * COLUMN_LENGTH - name_files_count)
 
-    transposed_files = file_names_filled_blanks.each_slice(line_length).to_a.transpose.map(&:compact)
-
-    transposed_files
+    file_names_filled_blanks.each_slice(line_length).to_a.transpose.map(&:compact)
   end
 
   def count_file_names_size
     @file_names.size
   end
-
 end

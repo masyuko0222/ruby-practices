@@ -15,13 +15,13 @@ class LongFormatter
     formatted_file_names =
       @states_of_files.map do |state_of_file|
         base_format =
-          "#{state_of_file[:file_type]}" + 
-          "#{state_of_file[:file_permission]}" +
-          " #{state_of_file[:hardlink_count]}" +
-          " #{state_of_file[:user_name]}" +
-          " #{state_of_file[:group_name]}" +
-          " #{state_of_file[:file_size].to_s.rjust(rjust_length_of_file_size)}" +
-          " #{state_of_file[:time_stamp]}" +
+          state_of_file[:file_type].to_s +
+          state_of_file[:file_permission] +
+          " #{state_of_file[:hardlink_count]}" \
+          " #{state_of_file[:user_name]}" \
+          " #{state_of_file[:group_name]}" \
+          " #{state_of_file[:file_size].to_s.rjust(rjust_length_of_file_size)}" \
+          " #{state_of_file[:time_stamp]}" \
           " #{state_of_file[:file_name]}"
 
         add_link_format(base_format, state_of_file) if state_of_file[:symlink?]

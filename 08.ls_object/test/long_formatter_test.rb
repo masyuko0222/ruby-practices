@@ -7,7 +7,7 @@ require_relative '../lib/file_state'
 
 class LongFormatterTest < Minitest::Test
   def test_format_no_args
-    file_names = Directory.new().load_file_names
+    file_names = Directory.new.load_file_names
     states_of_files = file_names.map { |file_name| FileState.new(file_name).load_for_long_format }
     long_formatter = LongFormatter.new(file_names, states_of_files)
 
@@ -39,4 +39,3 @@ class LongFormatterTest < Minitest::Test
     assert_equal expected_format, long_formatter.format
   end
 end
-
