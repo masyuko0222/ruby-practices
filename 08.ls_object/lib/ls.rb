@@ -8,7 +8,7 @@ require_relative './short_formatter'
 def main
   args = load_args
 
-  file_names = Directory.new(**args).load_file_names
+  file_names = Directory.new(**args.slice(:all_files, :reverse_in_sort)).load_file_names
 
   formatted_file_names =
     args[:long_format] ? LongFormatter.new(file_names).format : ShortFormatter.new(file_names).format
