@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-require 'debug'
 require 'optparse'
 require_relative './directory'
 require_relative './long_formatter'
