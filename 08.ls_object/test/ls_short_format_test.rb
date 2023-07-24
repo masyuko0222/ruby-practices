@@ -1,14 +1,14 @@
 # frozen_string_literal:true
 
 require 'minitest/autorun'
-require_relative '../lib/short_formatter'
+require_relative '../lib/ls_short_format'
 require_relative '../lib/directory'
 
-class ShortFormatterTest < Minitest::Test
+class LsShortFormatTest < Minitest::Test
   def test_format_no_args
     directory = Directory.new
     file_names = directory.load_file_names
-    short_formatter = ShortFormatter.new(file_names)
+    short_formatter = LsShortFormat.new(file_names)
 
     expected_format = [
       'aggressive_link                                     old.rb                                              ten',
@@ -26,7 +26,7 @@ class ShortFormatterTest < Minitest::Test
   def test_format_reverse_option
     directory = Directory.new(reverse_in_sort: true)
     file_names = directory.load_file_names
-    short_formatter = ShortFormatter.new(file_names)
+    short_formatter = LsShortFormat.new(file_names)
 
     expected_format = [
       'two                                                 six                                                 nine',

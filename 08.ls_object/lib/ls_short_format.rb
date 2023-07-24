@@ -2,7 +2,7 @@
 
 COLUMN_LENGTH = 3
 
-class ShortFormatter
+class LsShortFormat
   def initialize(file_names)
     @file_names = file_names
   end

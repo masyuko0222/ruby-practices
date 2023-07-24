@@ -1,14 +1,14 @@
 # frozen_string_literal:true
 
 require 'minitest/autorun'
-require_relative '../lib/long_formatter'
+require_relative '../lib/ls_long_format'
 require_relative '../lib/directory'
 require_relative '../lib/file_state'
 
-class LongFormatterTest < Minitest::Test
+class LsLongFormatTest < Minitest::Test
   def test_format_no_args
     file_names = Directory.new.load_file_names
-    long_formatter = LongFormatter.new(file_names)
+    long_formatter = LsLongFormat.new(file_names)
 
     expected_format = [
       'total 20',

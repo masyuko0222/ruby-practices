@@ -2,7 +2,7 @@
 
 require_relative './file_state'
 
-class LongFormatter
+class LsLongFormat
   def initialize(file_names)
     @file_names = file_names
   end
