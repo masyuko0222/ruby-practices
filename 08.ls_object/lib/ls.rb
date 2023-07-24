@@ -10,10 +10,9 @@ def main
 
   file_names = Directory.new(**args.slice(:all_files, :reverse_in_sort)).load_file_names
 
-  formatted_file_names =
-    args[:long_format] ? LsLongFormat.new(file_names).format : LsShortFormat.new(file_names).format
+  format_class = args[:long_format] ? LsLongFormat : LsShortFormat
 
-  puts formatted_file_names
+  puts format_class.new(file_names).format
 end
 
 def load_args
