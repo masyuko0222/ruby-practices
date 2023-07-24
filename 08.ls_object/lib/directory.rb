@@ -7,7 +7,7 @@ class Directory
   end
 
   def load_file_names
-    all_files = Dir.entries('.').sort_by(&:downcase)
+    all_files = Dir.glob(['*', '..'], File::FNM_DOTMATCH).sort_by(&:downcase)
 
     filtered_files = @all_files ? all_files : all_files.grep_v(/^\./)
 
