@@ -1,5 +1,7 @@
 # frozen_string_literal:true
 
+# rubocop:disable Layout/LineLength
+
 require 'minitest/autorun'
 require_relative '../lib/ls_short_format'
 require_relative '../lib/directory'
@@ -41,3 +43,5 @@ class LsShortFormatTest < Minitest::Test
     assert_equal expected_format, short_formatter.format
   end
 end
+
+# rubocop:enable Layout/LineLength

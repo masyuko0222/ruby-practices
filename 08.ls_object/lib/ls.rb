@@ -29,4 +29,3 @@ def load_args
 end
 
 main
-
