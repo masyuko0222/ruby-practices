@@ -1,5 +1,7 @@
 # frozen_string_literal:true
 
+require "optparse"
+
 class Params
   attr_reader :paths, :options
 
