@@ -14,18 +14,6 @@ class Params
     opt.on('-c') { |v| @options[:byte_size] = true }
 
     @paths = opt.parse!(argv)
-    @options = tmp_options.empty? ? { line_count: true } : tmp_options
-  end
-
-  def lines_count?
-    !!@options[:line_count]
-  end
-
-  def words_count?
-    !!@options[:words_count]
-  end
-
-  def byte_size?
-    !!@options[:byte_size]
+    @options = tmp_options.empty? ? { line_count: true, words_count: true, byte_size: true } : tmp_options
   end
 end
