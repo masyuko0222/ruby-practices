@@ -23,6 +23,10 @@ class WcFile
     File.size(@path_name)
   end
 
+  def name
+    @path_name.to_s
+  end
+
   private
 
   def read_file
@@ -31,6 +35,6 @@ class WcFile
 
   # For debug
   def to_s
-    @path_name.basename.to_s
+    name
   end
 end
