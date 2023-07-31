@@ -1,8 +1,8 @@
 require 'pathname'
 
 class WcFile
-  def self.all(params)
-    params.paths.map do |path|
+  def self.all(paths)
+    paths.map do |path|
       WcFile.new(path)
     end
   end
