@@ -3,6 +3,8 @@ class WcFile
     file_paths.map { |path| WcFile.new(path) }
   end
 
+  attr_reader :path
+
   def initialize(path)
     @path = path
   end
@@ -22,6 +24,6 @@ class WcFile
   private
 
   def file_content
-    File.read(@path)
+    File.read(path)
   end
 end
