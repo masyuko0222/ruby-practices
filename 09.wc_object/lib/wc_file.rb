@@ -8,14 +8,20 @@ class WcFile
   end
 
   def count_lines
-    File.read(@path).count("\n")
+    file_content.count("\n")
   end
 
   def count_words
-    File.read(@path).split(/\s+/).size
+    file_content.split(/\s+/).size
   end
 
   def count_byte_size
-    File.read(@path).bytesize
+    file_content.bytesize
+  end
+
+  private
+
+  def file_content
+    File.read(@path)
   end
 end
