@@ -18,24 +18,20 @@ class DefaultFormat
   private
 
   def single_file_format(wc_file)
-    width = calc_width(wc_file)
+    counts = store_counts(wc_file)
+    width = counts.map { |count| count.to_s.length }.max
 
-    counts_format = []
-    counts_format << wc_file.count_lines if @lines_opt
-    counts_format << wc_file.count_words if @words_opt
-    counts_format << wc_file.count_byte_size if @byte_size_opt
-
-    counts_format = counts_format.map { |count| count.to_s.rjust(width) }
+    counts_format = counts.map { |count| count.to_s.rjust(width) }
     counts_format << wc_file.path
     counts_format.join(' ')
   end
 
-  def calc_width(wc_file)
+  def store_counts(wc_file)
     counts = []
     counts << wc_file.count_lines if @lines_opt
     counts << wc_file.count_words if @words_opt
     counts << wc_file.count_byte_size if @byte_size_opt
 
-    counts.map { |count| count.to_s.length }.max
+    counts
   end
 end
