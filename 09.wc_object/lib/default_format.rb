@@ -18,12 +18,16 @@ class DefaultFormat
   def single_file_format(wc_file)
     width = calc_width(wc_file)
 
-    [
-      wc_file.count_lines.to_s.rjust(width),
-      wc_file.count_words.to_s.rjust(width),
-      wc_file.count_byte_size.to_s.rjust(width),
-      wc_file.path
-    ].join(' ')
+    counts_format =
+      [
+        wc_file.count_lines,
+        wc_file.count_words,
+        wc_file.count_byte_size
+      ].map { |count| count.to_s.rjust(width) }
+
+    counts_format << wc_file.path
+
+    counts_format.join(' ')
   end
 
   def calc_width(wc_file)
