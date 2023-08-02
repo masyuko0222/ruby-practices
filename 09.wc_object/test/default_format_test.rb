@@ -27,6 +27,28 @@ class DefaultFormatTest < Minitest::Test
     assert_equal expected, DefaultFormat.new(text, wc_files, **options).render
   end
 
+  def test_same_digits_with_a_option
+    options = { lines_opt: true }
+    text = ''
+    file_paths = ['test/fixtures/1_1_2.txt']
+    wc_files = WcFile.all(file_paths)
+
+    expected = '1 test/fixtures/1_1_2.txt'
+
+    assert_equal expected, DefaultFormat.new(text, wc_files, **options).render
+  end
+
+  def test_different_digits_with_two_options
+    options = { words_opt: true, byte_size_opt: true }
+    text = ''
+    file_paths = ['test/fixtures/9_99_504.txt']
+    wc_files = WcFile.all(file_paths)
+
+    expected = ' 99 504 test/fixtures/9_99_504.txt'
+
+    assert_equal expected, DefaultFormat.new(text, wc_files, **options).render
+  end
+
   #def test_same_digits_only_lines_opt
   #  options = { lines_opt: true }
   #  text = ''
