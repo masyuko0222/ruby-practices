@@ -17,6 +17,18 @@ class DefaultFormat
 
   private
 
+  def stdin_format(text)
+    counts = []
+    counts << text.count("\n") if @lines_opt
+    counts << text.split(/\s+/).size if @words_opt
+    counts << text.bytesize if @byte_size_opt
+
+    width = counts.map { |count| count.to_s.length }.max
+
+    counts_format = counts.map { |count| count.to_s.rjust(width) }
+    counts_format.join(' ')
+  end
+
   def single_file_format(wc_file)
     counts = store_counts(wc_file)
     width = counts.map { |count| count.to_s.length }.max

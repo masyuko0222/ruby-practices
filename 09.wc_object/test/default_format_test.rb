@@ -49,30 +49,18 @@ class DefaultFormatTest < Minitest::Test
     assert_equal expected, DefaultFormat.new(text, wc_files, **options).render
   end
 
-  #def test_same_digits_only_lines_opt
-  #  options = { lines_opt: true }
-  #  text = ''
-  #  file_paths = ['test/fixtures/1_1_2.txt']
-  #  wc_files = WcFile.all(file_paths)
+  def test_stdin_all_options
+    options = { lines_opt: true, words_opt: true, byte_size_opt: true }
+    text = <<~TEXT
+      This is a great text.
+      You should check me.
+    TEXT
 
-  #  expected = '1 1 2 test/fixtures/1_1_2.txt'
+    file_paths = []
+    wc_files = WcFile.all(file_paths)
 
-  #  assert_equal expected, DefaultFormat.new(text, wc_files, **options).render
-  #end
+    expected = ' 2  9 43'
 
-  #def test_stdin_all_options
-  #  options = { lines_opt: true, words_opt: true, byte_size_opt: true }
-  #  text = <<~TEXT
-  #    This is a great text.
-  #    You should check me.
-  #  TEXT
-
-  #  file_paths = []
-  #  wc_files = WcFile.all(file_paths)
-
-  #  expected = '1 1 2 test/fixtures/1_1_2.txt'
-
-  #  assert_equal expected, DefaultFormat.new(text, wc_files, **options).render
-  #end
-
+    assert_equal expected, DefaultFormat.new(text, wc_files, **options).render
+  end
 end
