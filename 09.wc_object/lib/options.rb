@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'optparse'
-require 'debug'
 
 class Options
   def initialize(argv)
@@ -14,7 +13,7 @@ class Options
     tmp_options = { show_lines: false, show_words: false, show_byte_size: false }
     opt.on('-l') {|v| tmp_options[:show_lines] = v }
     opt.on('-w') {|v| tmp_options[:show_words] = v }
-    opt.on('-c') {|v| tmp_options[:show_byte_size] = v }
+    opt.on('-c') {|v| tmp_options[:show_bytesize] = v }
     opt.parse!(@argv)
 
     options = tmp_options.values.none? ? tmp_options.transform_values { |v| v = true } : tmp_options
