@@ -10,7 +10,7 @@ class Options
   def load
     opt = OptionParser.new
 
-    tmp_options = { show_lines: false, show_words: false, show_byte_size: false }
+    tmp_options = { show_lines: false, show_words: false, show_bytesize: false }
     opt.on('-l') {|v| tmp_options[:show_lines] = v }
     opt.on('-w') {|v| tmp_options[:show_words] = v }
     opt.on('-c') {|v| tmp_options[:show_bytesize] = v }

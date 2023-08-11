@@ -13,12 +13,19 @@ class Format
     width = calc_width
 
     # ex) [Text1, Text2].zip(Path1, Path2) => [[Text1, Path1], [Text2, Path2]]
+    body_line =
     @texts.zip(@file_paths).map do |text, file_path|
-      tmp_format =
-        store_counts_to_array(text).map { |count| rjust_count(count, width) }
+      tmp_format = store_counts_to_array(text).map { |count| rjust_count(count, width) }
       tmp_format << file_path
       tmp_format.join(' ')
     end
+
+    total_line = @texts.map { |text| store_counts_to_array(text) }.transpose.map(&:sum).map { |total| rjust_count(total, width) }
+    total_line << 'total'
+    if @file_paths.size >= 2
+      body_line << total_line.join(' ')
+    end
+    body_line
   end
 
   private
