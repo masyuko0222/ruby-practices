@@ -9,13 +9,25 @@ class Format
   end
 
   def format
-    width =
+    each_text_counts =
       @texts.map do |text|
         count_list = []
         count_list << text.lines if @show_lines
         count_list << text.words if @show_words
         count_list << text.bytesize if @show_bytesize
-      end.flatten.max.to_s.length
+        count_list
+      end
+
+    total_counts =
+      @texts.map do |text|
+        count_list = []
+        count_list << text.lines if @show_lines
+        count_list << text.words if @show_words
+        count_list << text.bytesize if @show_bytesize
+      end.transpose.map(&:sum) if @texts.size >= 2
+
+    total_counts_max_width = total_counts&.max || 0
+    width = [each_text_counts.flatten.max, total_counts_max_width].max.to_s.length
 
     count_line =
       @texts.map do |text|
