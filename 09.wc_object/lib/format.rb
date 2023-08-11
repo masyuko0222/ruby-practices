@@ -1,8 +1,7 @@
 # frozen_string_literal: true
 require 'debug'
 class Format
-  def initialize(file_paths = [], texts = [], show_lines: false, show_words: false, show_bytesize: false)
-    @file_paths = file_paths
+  def initialize(texts = [], show_lines: false, show_words: false, show_bytesize: false)
     @texts = texts
     @show_lines = show_lines
     @show_words = show_words
@@ -10,41 +9,41 @@ class Format
   end
 
   def format
-    width = calc_width
+    width =
+      @texts.map do |text|
+        count_list = []
+        count_list << text.lines if @show_lines
+        count_list << text.words if @show_words
+        count_list << text.bytesize if @show_bytesize
+      end.flatten.max.to_s.length
 
-    # ex) [Text1, Text2].zip(Path1, Path2) => [[Text1, Path1], [Text2, Path2]]
-    body_line =
-    @texts.zip(@file_paths).map do |text, file_path|
-      tmp_format = store_counts_to_array(text).map { |count| rjust_count(count, width) }
-      tmp_format << file_path
-      tmp_format.join(' ')
+    count_line =
+      @texts.map do |text|
+        count_list = []
+        count_list << text.lines.to_s.rjust(width) if @show_lines
+        count_list << text.words.to_s.rjust(width) if @show_words
+        count_list << text.bytesize.to_s.rjust(width) if @show_bytesize
+        count_list << text.source_path
+        count_list.join(' ')
+      end
+
+    if @texts.size >= 2
+      total_line =
+        @texts.map do |text|
+          count_list = []
+          count_list << text.lines if @show_lines
+          count_list << text.words if @show_words
+          count_list << text.bytesize if @show_bytesize
+        end.transpose.map(&:sum).map { |total| total.to_s.rjust(width) }.join(' ')
+
+        total_line << ' total'
+        total_line
     end
 
-    total_line = @texts.map { |text| store_counts_to_array(text) }.transpose.map(&:sum).map { |total| rjust_count(total, width) }
-    total_line << 'total'
-    if @file_paths.size >= 2
-      body_line << total_line.join(' ')
-    end
-    body_line
+    all_lines = total_line ? count_line.push(total_line) : count_line
+    all_lines
   end
 
   private
 
-  def calc_width
-    @texts.map do |text|
-      store_counts_to_array(text)
-    end.flatten.max.to_s.length
-  end
-
-  def rjust_count(count, width)
-    count.to_s.rjust(width)
-  end
-
-  def store_counts_to_array(text)
-    tmp_array = []
-    tmp_array << text.lines if @show_lines
-    tmp_array << text.words if @show_words
-    tmp_array << text.bytesize if @show_bytesize
-    tmp_array
-  end
 end

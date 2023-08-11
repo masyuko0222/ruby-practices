@@ -11,7 +11,10 @@ class Text
     end
   end
 
+  attr_reader :source_path
+
   def initialize(path)
+    @source_path = path
     @text = path.empty? ? $stdin.read : Pathname.new(path).read
   end
 
