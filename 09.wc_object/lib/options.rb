@@ -10,13 +10,12 @@ class Options
   def load
     opt = OptionParser.new
 
-    tmp_options = { show_lines: false, show_words: false, show_bytesize: false }
-    opt.on('-l') {|v| tmp_options[:show_lines] = v }
-    opt.on('-w') {|v| tmp_options[:show_words] = v }
-    opt.on('-c') {|v| tmp_options[:show_bytesize] = v }
+    options = { show_lines: false, show_words: false, show_bytesize: false }
+    opt.on('-l') { |v| options[:show_lines] = v }
+    opt.on('-w') { |v| options[:show_words] = v }
+    opt.on('-c') { |v| options[:show_bytesize] = v }
     opt.parse!(@argv)
 
-    options = tmp_options.values.none? ? tmp_options.transform_values { |v| v = true } : tmp_options
-    options
+    options.values.none? ? options.transform_values { true } : options
   end
 end
